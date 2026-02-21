@@ -38,14 +38,25 @@ if ($method == 'POST') {
     }
 
     if ($action == 'update_profile') {
-        $stmt = $db->prepare("UPDATE users SET region = ?, mahalla = ? WHERE telegram_id = ?");
+        if (!$data) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid JSON data']);
+            exit;
+        }
+        
         try {
+            $stmt = $db->prepare("UPDATE users SET region = ?, mahalla = ? WHERE telegram_id = ?");
             $stmt->execute([
                 $data['region'] ?? '',
                 $data['mahalla'] ?? '',
                 $data['telegram_id']
             ]);
-            echo json_encode(['status' => 'success']);
+            
+            if ($stmt->rowCount() > 0) {
+                echo json_encode(['status' => 'success']);
+            } else {
+                // Could be that data is the same as before, or ID not found
+                echo json_encode(['status' => 'success', 'note' => 'No changes made or user not found']);
+            }
         } catch (Exception $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }

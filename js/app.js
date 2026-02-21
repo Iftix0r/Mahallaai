@@ -18,7 +18,7 @@ async function init() {
 
         try {
             // Fetch user from DB
-            const response = await fetch(`${API_BASE}?action=get_user&telegram_id=${tgUser.id}`);
+            const response = await fetch(`${API_BASE}?action=get_user&telegram_id=${tgUser.id}&v=${Date.now()}`);
             const dbUser = await response.json();
 
             if (dbUser && !dbUser.error) {
@@ -26,7 +26,10 @@ async function init() {
                 updateUI(dbUser);
 
                 // If region or mahalla is missing, show setup modal
-                if (!dbUser.region || !dbUser.mahalla) {
+                const hasRegion = dbUser.region && dbUser.region.trim() !== '';
+                const hasMahalla = dbUser.mahalla && dbUser.mahalla.trim() !== '';
+
+                if (!hasRegion || !hasMahalla) {
                     setTimeout(() => {
                         profileModal.classList.remove('hidden');
                     }, 1000);
@@ -72,6 +75,9 @@ document.getElementById('save-profile').addEventListener('click', async () => {
     try {
         const response = await fetch(`${API_BASE}?action=update_profile`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 telegram_id: tgUser.id,
                 region: region,
@@ -83,6 +89,12 @@ document.getElementById('save-profile').addEventListener('click', async () => {
         if (result.status === 'success') {
             profileModal.classList.add('hidden');
             tg.showAlert("Profil yangilandi! ✅");
+
+            // Update local state
+            if (currentUser) {
+                currentUser.region = region;
+                currentUser.mahalla = mahalla;
+            }
 
             // Refresh UI
             userRegion.textContent = `${region}, ${mahalla} mah.`;
