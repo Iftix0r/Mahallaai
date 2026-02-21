@@ -147,6 +147,10 @@ function fadeOutIn(fromId, toId) {
     }
 }
 
+window.closeProfileModal = function () {
+    profileModal.classList.add('hidden');
+};
+
 function openService(service) {
     if (service === 'profile') {
         profileModal.classList.remove('hidden');

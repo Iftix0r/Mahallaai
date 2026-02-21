@@ -35,8 +35,8 @@ body {
     opacity: 1;
 }
 
-.screen.hidden {
-    display: none;
+.hidden {
+    display: none !important;
     opacity: 0;
     transform: translateY(10px);
 }
