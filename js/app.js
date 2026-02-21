@@ -1,4 +1,5 @@
 const tg = window.Telegram.WebApp;
+const API_BASE = 'api/index.php';
 
 tg.expand();
 tg.ready();
@@ -6,17 +7,95 @@ tg.ready();
 // Initial Setup
 const userName = document.getElementById('user-name');
 const userAvatar = document.getElementById('user-avatar');
+const userRegion = document.getElementById('user-region');
+const profileModal = document.getElementById('profile-modal');
 
-if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-    const user = tg.initDataUnsafe.user;
-    userName.textContent = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-    userAvatar.textContent = user.first_name.charAt(0);
+let currentUser = null;
+
+async function init() {
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        const tgUser = tg.initDataUnsafe.user;
+
+        try {
+            // Fetch user from DB
+            const response = await fetch(`${API_BASE}?action=get_user&telegram_id=${tgUser.id}`);
+            const dbUser = await response.json();
+
+            if (dbUser && !dbUser.error) {
+                currentUser = dbUser;
+                updateUI(dbUser);
+
+                // If region or mahalla is missing, show setup modal
+                if (!dbUser.region || !dbUser.mahalla) {
+                    setTimeout(() => {
+                        profileModal.classList.remove('hidden');
+                    }, 1000);
+                }
+            } else {
+                // Fallback to TG data if not in DB yet (this shouldn't happen if bot works)
+                userName.textContent = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
+                userAvatar.textContent = tgUser.first_name.charAt(0);
+            }
+        } catch (e) {
+            console.error("Data fetch error:", e);
+        }
+    }
+
+    // Fade out loading screen
+    setTimeout(() => {
+        fadeOutIn('loading', 'dashboard');
+    }, 1500);
 }
 
-// Loading Simulation
-setTimeout(() => {
-    fadeOutIn('loading', 'dashboard');
-}, 2200);
+function updateUI(user) {
+    if (!user) return;
+    userName.textContent = user.fullname || "Foydalanuvchi";
+    userAvatar.textContent = (user.fullname || "M").charAt(0);
+    if (user.region || user.mahalla) {
+        userRegion.textContent = `${user.region || ''}, ${user.mahalla || ''} mah.`;
+    } else {
+        userRegion.textContent = "Hudud belgilanmagan";
+    }
+}
+
+// Profile Save Logic
+document.getElementById('save-profile').addEventListener('click', async () => {
+    const region = document.getElementById('setup-region').value;
+    const mahalla = document.getElementById('setup-mahalla').value;
+
+    if (!region || !mahalla) {
+        tg.showAlert("Iltimos, barcha maydonlarni to'ldiring!");
+        return;
+    }
+
+    const tgUser = tg.initDataUnsafe.user;
+    try {
+        const response = await fetch(`${API_BASE}?action=update_profile`, {
+            method: 'POST',
+            body: JSON.stringify({
+                telegram_id: tgUser.id,
+                region: region,
+                mahalla: mahalla
+            })
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            profileModal.classList.add('hidden');
+            tg.showScanQrPopup({ text: "Profil yangilandi!" }); // Just a nice effect or use showAlert
+            setTimeout(() => tg.closeScanQrPopup(), 1500);
+
+            // Refresh UI
+            userRegion.textContent = `${region}, ${mahalla} mah.`;
+        } else {
+            tg.showAlert("Xatolik yuz berdi: " + result.message);
+        }
+    } catch (e) {
+        tg.showAlert("Server bilan aloqa uzildi.");
+    }
+});
+
+init();
 
 function switchTab(tabId) {
     const screens = {
