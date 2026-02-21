@@ -17,7 +17,7 @@ async function init() {
         const tgUser = tg.initDataUnsafe.user;
 
         try {
-            // Fetch user from DB
+            // Fetch user from DB with cache buster
             const response = await fetch(`${API_BASE}?action=get_user&telegram_id=${tgUser.id}&v=${Date.now()}`);
             const dbUser = await response.json();
             console.log("DB User:", dbUser);
@@ -25,27 +25,11 @@ async function init() {
             if (dbUser && !dbUser.error) {
                 currentUser = dbUser;
                 updateUI(dbUser);
-
-                // If region or mahalla is missing, show setup modal
-                const hasRegion = dbUser.region && dbUser.region.trim() !== '';
-                const hasMahalla = dbUser.mahalla && dbUser.mahalla.trim() !== '';
-                const justFilled = sessionStorage.getItem("profileFilled");
-
-                if ((!hasRegion || !hasMahalla) && !justFilled) {
-                    console.log("Profile data missing, showing modal...");
-                    setTimeout(() => {
-                        profileModal.classList.remove('hidden');
-                    }, 1000);
-                }
             } else {
                 console.log("User not in DB or error:", dbUser.error);
                 // Fallback to TG data
                 userName.textContent = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
                 userAvatar.textContent = tgUser.first_name.charAt(0);
-
-                if (!sessionStorage.getItem("profileFilled")) {
-                    setTimeout(() => profileModal.classList.remove('hidden'), 1500);
-                }
             }
         } catch (e) {
             console.error("Data fetch error:", e);
@@ -164,6 +148,11 @@ function fadeOutIn(fromId, toId) {
 }
 
 function openService(service) {
+    if (service === 'profile') {
+        profileModal.classList.remove('hidden');
+        return;
+    }
+
     tg.MainButton.setText("Xizmatni tanlash: " + service);
     tg.MainButton.show();
 

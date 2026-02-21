@@ -156,8 +156,14 @@
         <div id="profile-modal" class="modal-backdrop hidden">
             <div class="modal">
                 <div class="modal-header">
-                    <h3>Profilni to'ldiring</h3>
-                    <p>Xizmatlardan foydalanish uchun hududingizni kiriting</p>
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <h3>Profilni to'ldiring</h3>
+                            <p>Xizmatlardan foydalanish uchun hududingizni kiriting</p>
+                        </div>
+                        <button onclick="document.getElementById('profile-modal').classList.add('hidden')"
+                            style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+                    </div>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
