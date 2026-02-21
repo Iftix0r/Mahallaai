@@ -16,37 +16,44 @@ if ($chat_id) {
         $stmt->execute([$chat_id]);
         $user = $stmt->fetch();
 
-        if ($user && $user['fullname']) {
+        if ($user && $user['fullname'] && $user['phone']) {
             sendMessage($chat_id, "<b>Xush kelibsiz, " . htmlspecialchars($user['fullname']) . "!</b>\n\nMahalla AI tizimi sizga xizmat ko'rsatishga tayyor. Quyidagi tugmani bosib Web App-ni ishga tushiring:", [
                 'inline_keyboard' => [[
                     ['text' => "🚀 Tizimga kirish", 'web_app' => ['url' => WEBAPP_URL]]
                 ]]
             ]);
         } else {
-            sendMessage($chat_id, "<b>Assalomu alaykum!</b>\n\nMahalla AI - raqamli mahalla tizimiga xush kelibsiz. Tizimdan foydalanish uchun ro'yxatdan o'tishingiz kerak.\n\nIltimos, ism-familiyangizni kiriting:");
+            // Get name from Telegram account
+            $first_name = $message['from']['first_name'] ?? '';
+            $last_name = $message['from']['last_name'] ?? '';
+            $fullname = trim($first_name . ' ' . $last_name);
+            
+            if (!$user) {
+                $stmt = $db->prepare("INSERT INTO users (telegram_id, fullname) VALUES (?, ?)");
+                $stmt->execute([$chat_id, $fullname]);
+            } elseif (!$user['fullname']) {
+                $stmt = $db->prepare("UPDATE users SET fullname = ? WHERE telegram_id = ?");
+                $stmt->execute([$fullname, $chat_id]);
+            }
+
+            sendMessage($chat_id, "<b>Assalomu alaykum, " . htmlspecialchars($fullname) . "!</b>\n\nMahalla AI - raqamli mahalla tizimiga xush kelibsiz. Tizimdan foydalanish uchun telefon raqamingizni yuboring:", [
+                'keyboard' => [[['text' => "📱 Raqamni yuborish", 'request_contact' => true]]],
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true
+            ]);
         }
     } else {
         $stmt = $db->prepare("SELECT * FROM users WHERE telegram_id = ?");
         $stmt->execute([$chat_id]);
         $user = $stmt->fetch();
 
-        if (!$user) {
-            $stmt = $db->prepare("INSERT INTO users (telegram_id, fullname) VALUES (?, ?)");
-            $stmt->execute([$chat_id, $text]);
-            sendMessage($chat_id, "Raxmat! Endi telefon raqamingizni yuboring (Masalan: +998901234567):", [
-                'reply_markup' => [
-                    'keyboard' => [[['text' => "📱 Raqamni yuborish", 'request_contact' => true]]],
-                    'resize_keyboard' => true,
-                    'one_time_keyboard' => true
-                ]
-            ]);
-        } elseif (!$user['phone'] && isset($message['contact'])) {
+        if ($user && !$user['phone'] && isset($message['contact'])) {
             $phone = $message['contact']['phone_number'];
             $stmt = $db->prepare("UPDATE users SET phone = ? WHERE telegram_id = ?");
             $stmt->execute([$phone, $chat_id]);
             
             sendMessage($chat_id, "Tabriklaymiz! Ro'yxatdan o'tish muvaffaqiyatli yakunlandi. 🎉", [
-                'reply_markup' => ['remove_keyboard' => true]
+                'remove_keyboard' => true
             ]);
             
             sendMessage($chat_id, "Quyidagi tugma orqali Web App-dan foydalanishingiz mumkin:", [

@@ -10,7 +10,7 @@
   </p>
   
   [![PHP Version](https://img.shields.io/badge/PHP-8.x-blue.svg)](https://www.php.net/)
-  [![SQLite](https://img.shields.io/badge/Database-SQLite-lightgrey.svg)](https://www.sqlite.org/)
+  [![MySQL](https://img.shields.io/badge/Database-MySQL-blue.svg)](https://www.mysql.com/)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
   [![Telegram](https://img.shields.io/badge/Telegram-Mini%20App-blue.svg)](https://telegram.org/)
 </div>
@@ -32,7 +32,7 @@
 ## 🛠 Texnologik Stek
 
 - **Backend:** Pure PHP (Slim & Fast)
-- **Database:** SQLite (Yengil va xavfsiz)
+- **Database:** MySQL (Kuchli va kengayuvchan)
 - **Frontend:** HTML5, Modern CSS (Custom Properties), JavaScript (Vanilla)
 - **API:** Telegram Bot API & Mini App Webview
 
@@ -45,10 +45,13 @@
     ```
 
 2.  **Konfiguratsiya:**
-    `api/config.php` faylini oching va bot tokeningizni kiriting:
+    `api/config.php` faylini oching va bot tokeningiz hamda MySQL ma'lumotlarini kiriting:
     ```php
     define('BOT_TOKEN', 'SIZNING_BOT_TOKENINGIZ');
-    define('WEBAPP_URL', 'https://domain.uz/index.html');
+    define('DB_HOST', 'localhost');
+    define('DB_NAME', 'mahalla_db');
+    define('DB_USER', 'root');
+    define('DB_PASS', 'parol');
     ```
 
 3.  **Webhook-ni sozlash:**
