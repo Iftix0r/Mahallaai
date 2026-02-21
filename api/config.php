@@ -1,6 +1,6 @@
 <?php
 // Mahalla AI Configuration
-define('BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE'); // User should replace this
+define('BOT_TOKEN', '8379929665:AAHkLCyvqYAIUN2McdW5eRFz7JjRLq1Uut8'); // User should replace this
 define('API_URL', 'https://api.telegram.org/bot' . BOT_TOKEN . '/');
 define('WEBAPP_URL', 'https://yourdomain.com/index.html'); // Web App URL
 
