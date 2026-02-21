@@ -63,5 +63,5 @@ Loyiha dizayni O'zbekiston davlat tashkilotlari uchun tavsiya etilgan ranglar va
 
 <div align="center">
   Loyiha <b>Iftixor</b> tomonidan yaratildi. <br />
-  © 2026 Mahalla AI. Barcha huquqlar himoyalangan.
+  © 2026 Mahalla AI. Barcha huquqlar himoyalanganmi.
 </div>
