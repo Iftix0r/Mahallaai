@@ -1,24 +1,67 @@
-# Mahalla AI - Digital Mahalla System
+# 🏦 Mahalla AI - Raqamli Mahalla Platformasi
 
-Bu loyiha Telegram Bot va Web App (Mini App) orqali mahalla tizimini raqamlashtirish uchun foydalaniladi.
+<div align="center">
+  <img src="https://logobank.uz:8005/static/logos_png/Mahalla_vazirligi.png" width="150" alt="Mahalla AI Logo">
+  <br />
+  <p align="center">
+    <strong>Zamonaviy, xavfsiz va qulay mahalla boshqaruv tizimi.</strong>
+    <br />
+    O'zbekiston fuqarolari uchun mo'ljallangan Telegram Mini App platformasi.
+  </p>
+  
+  [![PHP Version](https://img.shields.io/badge/PHP-8.x-blue.svg)](https://www.php.net/)
+  [![SQLite](https://img.shields.io/badge/Database-SQLite-lightgrey.svg)](https://www.sqlite.org/)
+  [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+  [![Telegram](https://img.shields.io/badge/Telegram-Mini%20App-blue.svg)](https://telegram.org/)
+</div>
 
-## Texnologiyalar
-- **Backend:** PHP (Pure)
-- **Database:** SQLite
-- **Frontend:** HTML5, Modern CSS (Glassmorphism), JavaScript
-- **API:** Telegram Bot API & WebApp API
+---
 
-## O'rnatish
-1. `api/config.php` fayliga kiring va `BOT_TOKEN` ni o'z botingiz tokeniga almashtiring.
-2. Web App URL (`WEBAPP_URL`) ni o'zingizning xosting manzilingizga almashtiring.
-3. `bot.php` faylini webhook sifatida Telegram-ga ulashing:
-   `https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://yourdomain.com/bot.php`
+## ✨ Loyiha haqida
 
-## Imkoniyatlar
-- 👤 **Ro'yxatdan o'tish:** Bot orqali foydalanuvchilarni aniqlash.
-- 📄 **Ma'lumotnomalar:** Davlat xizmatlari uchun onlayn arizalar.
-- 💬 **AI Yordamchi:** Fuqarolarning savollariga javob beruvchi sun'iy intellekt.
-- 📰 **Yangiliklar:** Mahalladagi so'nggi xabarlar.
+**Mahalla AI** — bu mahalla tizimini raqamlashtirish, fuqarolar va mahalla idorasi o'rtasidagi muloqotni osonlashtirish uchun yaratilgan zamonaviy platforma. Tizim orqali fuqarolar uyidan chiqmagan holda turli davlat xizmatlaridan foydalanishlari va sun'iy intellekt yordamchisidan maslahat olishlari mumkin.
 
-## Dizayn
-Dizayn zamonaviy "Glassmorphism" uslubida va "Outfit" shrifti yordamida qilingan, bu foydalanuvchi uchun premium va qulay muhit yaratadi.
+## 🚀 Asosiy Imkoniyatlar
+
+- 📱 **Telegram Mini App:** Ilovani o'rnatmasdan to'g'ridan-to'g'ri Telegram ichida foydalanish.
+- 💬 **AI Assistant:** Fuqarolarning savollariga 24/7 rejimida javob beruvchi sun'iy intellekt.
+- 📄 **Onlayn Arizalar:** Ma'lumotnoma va boshqa hujjatlar uchun masofadan ariza topshirish.
+- 🔔 **Tezkor Xabarnomalar:** Mahalla yangiliklari va tadbirlari haqida doimiy xabardorlik.
+- 🎨 **Premium UI/UX:** Glassmorphism uslubidagi ko'zni charchatmaydigan, premium dizayn.
+
+## 🛠 Texnologik Stek
+
+- **Backend:** Pure PHP (Slim & Fast)
+- **Database:** SQLite (Yengil va xavfsiz)
+- **Frontend:** HTML5, Modern CSS (Custom Properties), JavaScript (Vanilla)
+- **API:** Telegram Bot API & Mini App Webview
+
+## ⚙️ O'rnatish
+
+1.  **Repozitoriyani klonlang:**
+    ```bash
+    git clone https://github.com/Iftix0r/Mahallaai.git
+    cd Mahallaai
+    ```
+
+2.  **Konfiguratsiya:**
+    `api/config.php` faylini oching va bot tokeningizni kiriting:
+    ```php
+    define('BOT_TOKEN', 'SIZNING_BOT_TOKENINGIZ');
+    define('WEBAPP_URL', 'https://domain.uz/index.html');
+    ```
+
+3.  **Webhook-ni sozlash:**
+    Botni serveringizga bog'lang:
+    `https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://domain.uz/bot.php`
+
+## 🎨 Dizayn Konsepsiyasi
+
+Loyiha dizayni O'zbekiston davlat tashkilotlari uchun tavsiya etilgan ranglar va zamonaviy "Glass" (shisha) effektlari asosida qurilgan. Bu foydalanuvchida ishonch va qulaylik hissini uyg'otadi.
+
+---
+
+<div align="center">
+  Loyiha <b>Iftixor</b> tomonidan yaratildi. <br />
+  © 2026 Mahalla AI. Barcha huquqlar himoyalangan.
+</div>
