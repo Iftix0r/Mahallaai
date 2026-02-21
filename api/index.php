@@ -38,25 +38,31 @@ if ($method == 'POST') {
     }
 
     if ($action == 'update_profile') {
-        if (!$data) {
-            echo json_encode(['status' => 'error', 'message' => 'Invalid JSON data']);
+        if (!$data || !isset($data['telegram_id'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Missing data or Telegram ID']);
             exit;
         }
         
+        $tg_id = (string)$data['telegram_id'];
+        $region = $data['region'] ?? '';
+        $mahalla = $data['mahalla'] ?? '';
+        $fullname = $data['fullname'] ?? 'User';
+
         try {
-            $stmt = $db->prepare("UPDATE users SET region = ?, mahalla = ? WHERE telegram_id = ?");
-            $stmt->execute([
-                $data['region'] ?? '',
-                $data['mahalla'] ?? '',
-                $data['telegram_id']
-            ]);
+            // Using INSERT ... ON DUPLICATE KEY UPDATE to ensure it works even if user wasn't in DB
+            $stmt = $db->prepare("INSERT INTO users (telegram_id, fullname, region, mahalla) 
+                                VALUES (?, ?, ?, ?) 
+                                ON DUPLICATE KEY UPDATE 
+                                region = VALUES(region), 
+                                mahalla = VALUES(mahalla)");
             
-            if ($stmt->rowCount() > 0) {
-                echo json_encode(['status' => 'success']);
-            } else {
-                // Could be that data is the same as before, or ID not found
-                echo json_encode(['status' => 'success', 'note' => 'No changes made or user not found']);
-            }
+            $stmt->execute([$tg_id, $fullname, $region, $mahalla]);
+            
+            echo json_encode([
+                'status' => 'success', 
+                'message' => 'Profile updated successfully',
+                'affected' => $stmt->rowCount()
+            ]);
         } catch (Exception $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }

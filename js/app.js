@@ -20,6 +20,7 @@ async function init() {
             // Fetch user from DB
             const response = await fetch(`${API_BASE}?action=get_user&telegram_id=${tgUser.id}&v=${Date.now()}`);
             const dbUser = await response.json();
+            console.log("DB User:", dbUser);
 
             if (dbUser && !dbUser.error) {
                 currentUser = dbUser;
@@ -28,16 +29,23 @@ async function init() {
                 // If region or mahalla is missing, show setup modal
                 const hasRegion = dbUser.region && dbUser.region.trim() !== '';
                 const hasMahalla = dbUser.mahalla && dbUser.mahalla.trim() !== '';
+                const justFilled = sessionStorage.getItem("profileFilled");
 
-                if (!hasRegion || !hasMahalla) {
+                if ((!hasRegion || !hasMahalla) && !justFilled) {
+                    console.log("Profile data missing, showing modal...");
                     setTimeout(() => {
                         profileModal.classList.remove('hidden');
                     }, 1000);
                 }
             } else {
-                // Fallback to TG data if not in DB yet (this shouldn't happen if bot works)
+                console.log("User not in DB or error:", dbUser.error);
+                // Fallback to TG data
                 userName.textContent = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
                 userAvatar.textContent = tgUser.first_name.charAt(0);
+
+                if (!sessionStorage.getItem("profileFilled")) {
+                    setTimeout(() => profileModal.classList.remove('hidden'), 1500);
+                }
             }
         } catch (e) {
             console.error("Data fetch error:", e);
@@ -80,13 +88,16 @@ document.getElementById('save-profile').addEventListener('click', async () => {
             },
             body: JSON.stringify({
                 telegram_id: tgUser.id,
+                fullname: userName.textContent,
                 region: region,
                 mahalla: mahalla
             })
         });
         const result = await response.json();
+        console.log("Save result:", result);
 
         if (result.status === 'success') {
+            sessionStorage.setItem("profileFilled", "true");
             profileModal.classList.add('hidden');
             tg.showAlert("Profil yangilandi! ✅");
 
