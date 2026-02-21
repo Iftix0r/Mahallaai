@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mahalla AI - Digital Mahalla System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loading" class="screen">
+            <div class="loader-content">
+                <div class="logo-animation">
+                    <img src="https://logobank.uz:8005/static/logos_png/Mahalla_vazirligi.png" alt="Mahalla Logo"
+                        class="logo">
+                </div>
+                <h2>Mahalla AI</h2>
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="screen hidden">
+            <header>
+                <div class="user-profile">
+                    <div class="avatar" id="user-avatar">M</div>
+                    <div class="user-info">
+                        <h3 id="user-name">Foydalanuvchi</h3>
+                        <p id="user-region">Toshkent shahar, Yakkasaray t.</p>
+                    </div>
+                </div>
+                <button class="notification-btn" style="border: none; background: none; font-size: 1.2rem;">
+                    🔔
+                </button>
+            </header>
+
+            <main>
+                <section class="banner">
+                    <div class="banner-content">
+                        <h4>Mahalla AI bilan yanada oson!</h4>
+                        <p>Barcha davlat xizmatlari va mahalla yangiliklari endi bitta ilovada.</p>
+                        <button class="btn-primary" onclick="switchTab('chat')">AI Yordamchi bilan gaplashish</button>
+                    </div>
+                </section>
+
+                <section class="services-container">
+                    <div class="section-title">
+                        <h3>Asosiy xizmatlar</h3>
+                        <a href="#">Barchasi</a>
+                    </div>
+                    <div class="grid">
+                        <div class="service-card" onclick="openService('certificates')">
+                            <div class="card-icon blue">📄</div>
+                            <span>Ma'lumotnoma</span>
+                        </div>
+                        <div class="service-card" onclick="openService('applications')">
+                            <div class="card-icon green">📝</div>
+                            <span>Arizalar</span>
+                        </div>
+                        <div class="service-card" onclick="openService('social')">
+                            <div class="card-icon orange">🛡️</div>
+                            <span>Ijtimoiy yordam</span>
+                        </div>
+                        <div class="service-card" onclick="openService('police')">
+                            <div class="card-icon purple">⚖️</div>
+                            <span>Huquqiy maslahat</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="news-container">
+                    <div class="section-title">
+                        <h3>Mahalla yangiliklari</h3>
+                    </div>
+                    <div class="news-list">
+                        <div class="news-item">
+                            <div class="news-thumb"></div>
+                            <div class="news-info">
+                                <h5>"Obod Mahalla" yangi bosqichda</h5>
+                                <p>Mahallamizda yangi suv quvurlari o'tkazish ishlari boshlandi.</p>
+                            </div>
+                        </div>
+                        <div class="news-item">
+                            <div class="news-thumb"></div>
+                            <div class="news-info">
+                                <h5>Haftalik sport musobaqasi</h5>
+                                <p>Kelasi yakshanba kuni yoshlar o'rtasida mini-futbol turniri bo'lib o'tadi.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <nav class="bottom-nav">
+                <div class="nav-item active" onclick="switchTab('home')">
+                    <div class="icon">🏠</div>
+                    <span>Asosiy</span>
+                </div>
+                <div class="nav-item" onclick="openService('catalog')">
+                    <div class="icon">📁</div>
+                    <span>Katalog</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('chat')">
+                    <div class="icon">💬</div>
+                    <span>Chatbot</span>
+                </div>
+                <div class="nav-item" onclick="openService('profile')">
+                    <div class="icon">👤</div>
+                    <span>Profil</span>
+                </div>
+            </nav>
+        </div>
+
+        <!-- AI Assistant Tab -->
+        <div id="ai-chat" class="screen hidden">
+            <header>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button onclick="switchTab('home')"
+                        style="border: none; background: none; font-size: 1.5rem; cursor: pointer;">←</button>
+                    <h3 style="font-weight: 700;">Mahalla AI Yordamchi</h3>
+                </div>
+            </header>
+            <div class="chat-container" id="chat-messages">
+                <div class="message ai">
+                    <p>Assalomu alaykum! Men Mahalla AI yordamchisiman. Sizga qanday yordam bera olaman?</p>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" placeholder="Xabaringizni yozing..." id="chat-input">
+                <button id="send-btn">🚀</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
