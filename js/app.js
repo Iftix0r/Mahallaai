@@ -84,7 +84,13 @@ sendBtn.addEventListener('click', () => {
 
         // AI Response simulation
         setTimeout(() => {
-            addMessage("Kechirasiz, hozirda mening bilimlar bazam yangilanmoqda. Tez orada barcha savollaringizga javob bera olaman!", 'ai');
+            const responses = [
+                "Assalomu alaykum! Men sizga mahalla xizmatlari yoki arizalar bo'yicha yordam bera olaman. Sizga qaysi turdagi xizmat kerak?",
+                "Tushundim, ma'lumotnoma olish uchun 'Ma'lumotnoma' bo'limiga o'tishingiz mumkin. Yana qanday savollaringiz bor?",
+                "Hozirda tizimimiz orqali barcha turdagi ijtimoiy yordam arizalarini masofadan yuborish imkoniyati mavjud."
+            ];
+            const randomMsg = responses[Math.floor(Math.random() * responses.length)];
+            addMessage(randomMsg, 'ai');
         }, 1000);
     }
 });
