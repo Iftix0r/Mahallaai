@@ -82,8 +82,7 @@ document.getElementById('save-profile').addEventListener('click', async () => {
 
         if (result.status === 'success') {
             profileModal.classList.add('hidden');
-            tg.showScanQrPopup({ text: "Profil yangilandi!" }); // Just a nice effect or use showAlert
-            setTimeout(() => tg.closeScanQrPopup(), 1500);
+            tg.showAlert("Profil yangilandi! ✅");
 
             // Refresh UI
             userRegion.textContent = `${region}, ${mahalla} mah.`;
