@@ -36,9 +36,18 @@ async function init() {
         }
     }
 
-    // Fade out loading screen to selection screen
+    // Fade out loading screen to selection screen or specific tab
     setTimeout(() => {
-        fadeOutIn('loading', 'selection-screen');
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+
+        if (tab === 'system') {
+            fadeOutIn('loading', 'dashboard');
+        } else if (tab === 'food') {
+            fadeOutIn('loading', 'food-app');
+        } else {
+            fadeOutIn('loading', 'selection-screen');
+        }
     }, 1500);
 }
 

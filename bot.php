@@ -17,10 +17,11 @@ if ($chat_id) {
         $user = $stmt->fetch();
 
         if ($user && $user['fullname'] && $user['phone']) {
-            sendMessage($chat_id, "<b>Xush kelibsiz, " . htmlspecialchars($user['fullname']) . "!</b>\n\nMahalla AI tizimi sizga xizmat ko'rsatishga tayyor. Quyidagi tugmani bosib Web App-ni ishga tushiring:", [
-                'inline_keyboard' => [[
-                    ['text' => "🚀 Tizimga kirish", 'web_app' => ['url' => WEBAPP_URL]]
-                ]]
+            sendMessage($chat_id, "<b>Xush kelibsiz, " . htmlspecialchars($user['fullname']) . "!</b>\n\nMahalla AI tizimi sizga xizmat ko'rsatishga tayyor. Kerakli bo'limni tanlang:", [
+                'inline_keyboard' => [
+                    [['text' => "🏢 Tizimga kirish", 'web_app' => ['url' => WEBAPP_URL . "?tab=system"]]],
+                    [['text' => "🍔 Mahalla tezkor ovqatlar", 'web_app' => ['url' => WEBAPP_URL . "?tab=food"]]]
+                ]
             ]);
         } else {
             // Get name from Telegram account
@@ -56,10 +57,11 @@ if ($chat_id) {
                 'remove_keyboard' => true
             ]);
             
-            sendMessage($chat_id, "Quyidagi tugma orqali Web App-dan foydalanishingiz mumkin:", [
-                'inline_keyboard' => [[
-                    ['text' => "📱 Web App-ni ochish", 'web_app' => ['url' => WEBAPP_URL]]
-                ]]
+            sendMessage($chat_id, "Quyidagi tugmalar orqali xizmatlardan foydalanishingiz mumkin:", [
+                'inline_keyboard' => [
+                    [['text' => "🏢 Tizimga kirish", 'web_app' => ['url' => WEBAPP_URL . "?tab=system"]]],
+                    [['text' => "🍔 Mahalla tezkor ovqatlar", 'web_app' => ['url' => WEBAPP_URL . "?tab=food"]]]
+                ]
             ]);
         }
     }
