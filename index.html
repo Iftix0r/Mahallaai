@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/taxi.css">
     <link rel="stylesheet" href="css/market.css">
     <link rel="stylesheet" href="css/ish.css">
+    <link rel="stylesheet" href="css/abedu.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
@@ -84,6 +85,14 @@
                     <div class="card-text">
                         <h3>Mahalla Ish</h3>
                         <p>Bo'sh ish o'rinlari va e'lonlar markazi</p>
+                    </div>
+                </div>
+                <div class="selection-card abedu" onclick="switchTab('abedu')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon-large">🎓</div>
+                    <div class="card-text">
+                        <h3>AB Education</h3>
+                        <p>Aka-uka Bektoshevlar zamonaviy ta'lim markazi</p>
                     </div>
                 </div>
             </div>
@@ -670,6 +679,19 @@
                 <div class="modal-footer">
                     <button class="btn-primary" style="width: 100%;" onclick="submitJob()">Tartibni joylash</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- AB Education App -->
+        <div id="abedu-app" class="screen hidden" style="padding-bottom: 0;">
+            <header class="abedu-header">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
+                    <h3 style="font-weight: 700; font-size: 1.1rem; color: white;">AB Education</h3>
+                </div>
+            </header>
+            <div class="iframe-container">
+                <iframe src="https://abedu.uz" frameborder="0" width="100%" height="100%"></iframe>
             </div>
         </div>
 

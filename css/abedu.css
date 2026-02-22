@@ -1,0 +1,48 @@
+/* ========================================
+   AB EDUCATION APP
+   ======================================== */
+
+#abedu-app {
+    background: #ffffff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.abedu-header {
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+}
+
+.abedu-header .back-to-menu-dark {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.iframe-container {
+    flex: 1;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #f1f5f9;
+}
+
+.iframe-container iframe {
+    display: block;
+    border: none;
+    width: 100%;
+    height: 100%;
+}
+
+/* Selection Card specific */
+.selection-card.abedu {
+    background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+}
+
+.selection-card.abedu .card-icon-large {
+    background: #dbeafe;
+}

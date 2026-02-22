@@ -48,7 +48,8 @@ async function init() {
             'food': 'food-app',
             'taxi': 'taxi-app',
             'market': 'market-app',
-            'ish': 'ish-app'
+            'ish': 'ish-app',
+            'abedu': 'abedu-app'
         };
 
         const target = tabMap[tab] || 'selection-screen';
@@ -150,7 +151,8 @@ function switchTab(tabId) {
         'food': 'food-app',
         'taxi': 'taxi-app',
         'market': 'market-app',
-        'ish': 'ish-app'
+        'ish': 'ish-app',
+        'abedu': 'abedu-app'
     };
 
     const targetScreenId = screens[tabId];
