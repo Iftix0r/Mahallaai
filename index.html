@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/market.css">
     <link rel="stylesheet" href="css/ish.css">
     <link rel="stylesheet" href="css/abedu.css">
+    <link rel="stylesheet" href="css/biznes.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
@@ -98,647 +99,771 @@
             </div>
         </div>
 
-        <!-- Dashboard (System) -->
-        <div id="dashboard" class="screen hidden">
-            <header>
-                <div class="user-profile">
-                    <button class="back-to-menu" onclick="switchTab('menu')">←</button>
-                    <div class="avatar" id="user-avatar">M</div>
-                    <div class="user-info">
-                        <h3 id="user-name">Foydalanuvchi</h3>
-                        <p id="user-region">Toshkent shahar...</p>
-                    </div>
-                </div>
-                <button class="notification-btn" style="border: none; background: none; font-size: 1.2rem;">
-                    🔔
-                </button>
-            </header>
+        <!-- Biznes qo'shish tugmasi (pastda) -->
+        <button class="add-biznes-btn" onclick="switchTab('biznes')">
+            <span class="icon">📈</span> O'z biznesingizni qo'shing
+        </button>
+    </div>
 
-            <main>
-                <section class="banner">
-                    <div class="banner-content">
-                        <h4>Mahalla AI bilan yanada oson!</h4>
-                        <p>Barcha davlat xizmatlari va mahalla yangiliklari endi bitta ilovada.</p>
-                        <button class="btn-primary" onclick="switchTab('chat')">AI Yordamchi</button>
-                    </div>
-                </section>
-
-                <section class="stats-container">
-                    <div class="stat-item">
-                        <span class="stat-value">1,250</span>
-                        <span class="stat-label">Aholi</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">98%</span>
-                        <span class="stat-label">Xizmatlar</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">4.9</span>
-                        <span class="stat-label">Reyting</span>
-                    </div>
-                </section>
-
-                <section class="services-container">
-                    <div class="section-title">
-                        <h3>Asosiy xizmatlar</h3>
-                        <a href="#">Barchasi</a>
-                    </div>
-                    <div class="grid">
-                        <div class="service-card" onclick="openService('certificates')">
-                            <div class="card-icon blue">📄</div>
-                            <span>Ma'lumotnoma</span>
-                        </div>
-                        <div class="service-card" onclick="openService('applications')">
-                            <div class="card-icon green">📝</div>
-                            <span>Arizalar</span>
-                        </div>
-                        <div class="service-card" onclick="openService('social')">
-                            <div class="card-icon orange">🛡️</div>
-                            <span>Ijtimoiy yordam</span>
-                        </div>
-                        <div class="service-card" onclick="openService('police')">
-                            <div class="card-icon purple">⚖️</div>
-                            <span>Huquqiy maslahat</span>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="news-container">
-                    <div class="section-title">
-                        <h3>Mahalla yangiliklari</h3>
-                    </div>
-                    <div class="news-list">
-                        <div class="news-item">
-                            <div class="news-thumb"></div>
-                            <div class="news-info">
-                                <h5>"Obod Mahalla" yangi bosqichda</h5>
-                                <p>Mahallamizda yangi suv quvurlari o'tkazish ishlari boshlandi.</p>
-                            </div>
-                        </div>
-                        <div class="news-item">
-                            <div class="news-thumb"></div>
-                            <div class="news-info">
-                                <h5>Haftalik sport musobaqasi</h5>
-                                <p>Kelasi yakshanba kuni yoshlar o'rtasida mini-futbol turniri bo'lib o'tadi.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </main>
-
-            <nav class="bottom-nav">
-                <div class="nav-item active" onclick="switchTab('system')">
-                    <div class="icon">🏠</div>
-                    <span>Asosiy</span>
-                </div>
-                <div class="nav-item" onclick="openService('catalog')">
-                    <div class="icon">📁</div>
-                    <span>Katalog</span>
-                </div>
-                <div class="nav-item" onclick="switchTab('chat')">
-                    <div class="icon">💬</div>
-                    <span>Chatbot</span>
-                </div>
-                <div class="nav-item" onclick="openService('profile')">
-                    <div class="icon">👤</div>
-                    <span>Profil</span>
-                </div>
-            </nav>
-        </div>
-
-        <!-- Food App Screen -->
-        <div id="food-app" class="screen hidden">
-            <header class="food-header">
-                <div class="food-header-top">
-                    <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
-                    <div class="food-location">
-                        <span class="loc-icon">📍</span>
-                        <span id="food-user-location">Hozirgi joylashuvingiz</span>
-                    </div>
-                    <button class="cart-btn">🛒<span class="cart-count">0</span></button>
-                </div>
-                <div class="search-bar">
-                    <input type="text" placeholder="Ovqat yoki restoran qidirish...">
-                    <button class="filter-btn">🔍</button>
-                </div>
-            </header>
-
-            <main class="food-main">
-                <section class="food-categories">
-                    <div class="cat-item active">🍔 Barchasi</div>
-                    <div class="cat-item">🍟 Fast Food</div>
-                    <div class="cat-item">🥤 Ichimliklar</div>
-                    <div class="cat-item">🍰 Shirinliklar</div>
-                    <div class="cat-item">🍕 Pitsa</div>
-                </section>
-
-                <section class="food-offers">
-                    <div class="offer-card">
-                        <div class="offer-content">
-                            <h3>20% CHEGIRMA</h3>
-                            <p>Ilk buyurtmangiz uchun maxsus taklif</p>
-                            <button class="btn-offer">Olish</button>
-                        </div>
-                        <div class="offer-img">
-                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80"
-                                alt="Burger">
-                        </div>
-                    </div>
-                </section>
-
-                <section class="food-nearby">
-                    <div class="section-title">
-                        <h3>Yaqin atrofdagi joylar</h3>
-                        <a href="#">Barchasi</a>
-                    </div>
-                    <div class="food-grid" id="restaurants-list">
-                        <!-- Restaurants will be loaded here -->
-                        <div class="rest-card">
-                            <div class="rest-img"
-                                style="background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80')">
-                                <span class="rating">⭐ 4.8</span>
-                            </div>
-                            <div class="rest-info">
-                                <h4>Gozzo Pitsa</h4>
-                                <p>Pitsa • Fast Food • 15-20 min</p>
-                            </div>
-                        </div>
-                        <div class="rest-card">
-                            <div class="rest-img"
-                                style="background-image: url('https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&w=400&q=80')">
-                                <span class="rating">⭐ 4.5</span>
-                            </div>
-                            <div class="rest-info">
-                                <h4>Max Way</h4>
-                                <p>Burger • Lavash • 10-15 min</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="food-popular">
-                    <div class="section-title">
-                        <h3>Ommabop taomlar</h3>
-                    </div>
-                    <div class="popular-list">
-                        <div class="food-item-horizontal">
-                            <div class="food-thumb"
-                                style="background-image: url('https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=200&q=80')">
-                            </div>
-                            <div class="food-details">
-                                <h5>Double Cheeseburger</h5>
-                                <p>Sershira go'sht va pishloq</p>
-                                <div class="price-row">
-                                    <span class="price">35 000 so'm</span>
-                                    <button class="add-to-cart">+</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </main>
-        </div>
-
-        <!-- Taxi App Screen -->
-        <div id="taxi-app" class="screen hidden">
-            <header class="taxi-header">
-                <div class="food-header-top">
-                    <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
-                    <h3 style="font-weight: 700; font-size: 1.1rem;">Mahalla Taxi</h3>
-                    <div style="width: 40px;"></div>
-                </div>
-            </header>
-
-            <main class="taxi-main">
-                <!-- Map Placeholder -->
-                <div class="taxi-map">
-                    <div class="map-overlay">
-                        <div class="map-pin">📍</div>
-                        <p>Joylashuvingiz aniqlanmoqda...</p>
-                    </div>
-                </div>
-
-                <!-- Route Input -->
-                <div class="taxi-panel">
-                    <div class="route-card">
-                        <div class="route-input">
-                            <div class="route-dot green"></div>
-                            <input type="text" id="taxi-from" placeholder="Qayerdan?" value="Hozirgi joylashuv">
-                        </div>
-                        <div class="route-line"></div>
-                        <div class="route-input">
-                            <div class="route-dot red"></div>
-                            <input type="text" id="taxi-to" placeholder="Qayerga?">
-                        </div>
-                    </div>
-
-                    <!-- Car Types -->
-                    <div class="car-types">
-                        <div class="car-type active">
-                            <div class="car-icon">🚗</div>
-                            <div class="car-info">
-                                <h5>Standart</h5>
-                                <span>5 min</span>
-                            </div>
-                            <div class="car-price">8 000</div>
-                        </div>
-                        <div class="car-type">
-                            <div class="car-icon">🚙</div>
-                            <div class="car-info">
-                                <h5>Comfort</h5>
-                                <span>8 min</span>
-                            </div>
-                            <div class="car-price">15 000</div>
-                        </div>
-                        <div class="car-type">
-                            <div class="car-icon">🚐</div>
-                            <div class="car-info">
-                                <h5>Minivan</h5>
-                                <span>12 min</span>
-                            </div>
-                            <div class="car-price">20 000</div>
-                        </div>
-                    </div>
-
-                    <!-- Order Button -->
-                    <button class="taxi-order-btn" onclick="orderTaxi()">
-                        Taksi chaqirish
-                    </button>
-                </div>
-            </main>
-        </div>
-
-        <!-- Market App Screen -->
-        <div id="market-app" class="screen hidden">
-            <header class="market-header">
-                <div class="food-header-top">
-                    <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
-                    <h3 style="font-weight: 700; font-size: 1.1rem;">Mahalla Market</h3>
-                    <button class="cart-btn" onclick="openMarketCart()">🛒<span class="cart-count"
-                            id="market-cart-count">0</span></button>
-                </div>
-                <div class="search-bar">
-                    <input type="text" id="market-search" placeholder="Mahsulot qidirish...">
-                    <button class="filter-btn">🔍</button>
-                </div>
-            </header>
-
-            <main class="market-main">
-                <!-- Categories -->
-                <section class="market-categories">
-                    <div class="mcat-item active" data-cat="all">🏠 Barchasi</div>
-                    <div class="mcat-item" data-cat="fruits">🍎 Mevalar</div>
-                    <div class="mcat-item" data-cat="vegetables">🥦 Sabzavotlar</div>
-                    <div class="mcat-item" data-cat="dairy">🧀 Sut mahsulotlari</div>
-                    <div class="mcat-item" data-cat="meat">🥩 Go'sht</div>
-                    <div class="mcat-item" data-cat="bread">🍞 Non</div>
-                    <div class="mcat-item" data-cat="drinks">🧃 Ichimliklar</div>
-                    <div class="mcat-item" data-cat="cleaning">🧽 Tozalik</div>
-                </section>
-
-                <!-- Nearby Stores -->
-                <section class="market-stores">
-                    <div class="section-title">
-                        <h3>Yaqin do'konlar</h3>
-                    </div>
-                    <div class="store-scroll">
-                        <div class="store-chip active">🏪 Barcha do'konlar</div>
-                        <div class="store-chip">Korzinka</div>
-                        <div class="store-chip">Makro</div>
-                        <div class="store-chip">Havas</div>
-                    </div>
-                </section>
-
-                <!-- Products Grid -->
-                <section class="market-products">
-                    <div class="section-title">
-                        <h3>Mahsulotlar</h3>
-                        <span id="product-count">12 ta</span>
-                    </div>
-                    <div class="products-grid" id="products-grid">
-                        <div class="product-card" data-cat="fruits" data-name="Olma" data-price="12000">
-                            <div class="product-img" style="background: #fef3c7;"><span>🍎</span></div>
-                            <div class="product-info">
-                                <h5>Olma</h5>
-                                <p>1 kg</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">12 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card" data-cat="fruits" data-name="Banan" data-price="18000">
-                            <div class="product-img" style="background: #fef9c3;"><span>🍌</span></div>
-                            <div class="product-info">
-                                <h5>Banan</h5>
-                                <p>1 kg</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">18 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card" data-cat="vegetables" data-name="Pomidor" data-price="8000">
-                            <div class="product-img" style="background: #fee2e2;"><span>🍅</span></div>
-                            <div class="product-info">
-                                <h5>Pomidor</h5>
-                                <p>1 kg</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">8 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card" data-cat="vegetables" data-name="Kartoshka" data-price="5000">
-                            <div class="product-img" style="background: #fef3c7;"><span>🥔</span></div>
-                            <div class="product-info">
-                                <h5>Kartoshka</h5>
-                                <p>1 kg</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">5 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card" data-cat="dairy" data-name="Sut" data-price="14000">
-                            <div class="product-img" style="background: #eff6ff;"><span>🥛</span></div>
-                            <div class="product-info">
-                                <h5>Sut (1L)</h5>
-                                <p>Lactel</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">14 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card" data-cat="dairy" data-name="Pishloq" data-price="32000">
-                            <div class="product-img" style="background: #fef9c3;"><span>🧀</span></div>
-                            <div class="product-info">
-                                <h5>Pishloq</h5>
-                                <p>1 kg</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">32 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card" data-cat="meat" data-name="Mol go'shti" data-price="85000">
-                            <div class="product-img" style="background: #fee2e2;"><span>🥩</span></div>
-                            <div class="product-info">
-                                <h5>Mol go'shti</h5>
-                                <p>1 kg</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">85 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card" data-cat="meat" data-name="Tovuq" data-price="28000">
-                            <div class="product-img" style="background: #fef3c7;"><span>🍗</span></div>
-                            <div class="product-info">
-                                <h5>Tovuq</h5>
-                                <p>1 kg</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">28 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card" data-cat="bread" data-name="Non" data-price="3000">
-                            <div class="product-img" style="background: #fef3c7;"><span>🍞</span></div>
-                            <div class="product-info">
-                                <h5>Non (patir)</h5>
-                                <p>1 dona</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">3 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card" data-cat="drinks" data-name="Coca-Cola" data-price="9000">
-                            <div class="product-img" style="background: #fee2e2;"><span>🧃</span></div>
-                            <div class="product-info">
-                                <h5>Coca-Cola</h5>
-                                <p>1.5L</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">9 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card" data-cat="drinks" data-name="Suv" data-price="3000">
-                            <div class="product-img" style="background: #e0f2fe;"><span>💧</span></div>
-                            <div class="product-info">
-                                <h5>Nestle Pure</h5>
-                                <p>1.5L</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">3 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="product-card" data-cat="cleaning" data-name="Kir yuvish" data-price="25000">
-                            <div class="product-img" style="background: #ede9fe;"><span>🧽</span></div>
-                            <div class="product-info">
-                                <h5>Ariel (1kg)</h5>
-                                <p>Kir yuvish kukuni</p>
-                                <div class="product-bottom">
-                                    <span class="product-price">25 000</span>
-                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </main>
-
-            <!-- Floating Cart Bar -->
-            <div class="market-cart-bar hidden" id="market-cart-bar" onclick="openMarketCart()">
-                <div class="cart-bar-left">
-                    <span class="cart-bar-icon">🛒</span>
-                    <span class="cart-bar-text" id="cart-bar-items">0 ta mahsulot</span>
-                </div>
-                <div class="cart-bar-total" id="cart-bar-total">0 so'm</div>
-            </div>
-
-            <!-- Cart Modal -->
-            <div id="market-cart-modal" class="modal-backdrop hidden">
-                <div class="modal" style="max-height: 85vh; display: flex; flex-direction: column;">
-                    <div class="modal-header">
-                        <div style="display: flex; justify-content: space-between; align-items: start;">
-                            <div>
-                                <h3>Savatingiz</h3>
-                                <p>Buyurtmani tasdiqlang</p>
-                            </div>
-                            <button onclick="closeMarketCart()"
-                                style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
-                        </div>
-                    </div>
-                    <div class="modal-body" style="overflow-y: auto; flex: 1;" id="cart-items-list">
-                        <p style="text-align: center; color: var(--text-muted); padding: 20px;">Savat bo'sh</p>
-                    </div>
-                    <div class="modal-footer">
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                            <span style="font-weight: 600;">Jami:</span>
-                            <span style="font-weight: 800; font-size: 1.2rem; color: var(--primary);"
-                                id="cart-modal-total">0 so'm</span>
-                        </div>
-                        <button class="btn-primary"
-                            style="width: 100%; padding: 14px; border-radius: 14px; font-size: 1rem;"
-                            onclick="placeMarketOrder()">Buyurtma berish</button>
-                    </div>
+    <!-- Dashboard (System) -->
+    <div id="dashboard" class="screen hidden">
+        <header>
+            <div class="user-profile">
+                <button class="back-to-menu" onclick="switchTab('menu')">←</button>
+                <div class="avatar" id="user-avatar">M</div>
+                <div class="user-info">
+                    <h3 id="user-name">Foydalanuvchi</h3>
+                    <p id="user-region">Toshkent shahar...</p>
                 </div>
             </div>
-        </div>
+            <button class="notification-btn" style="border: none; background: none; font-size: 1.2rem;">
+                🔔
+            </button>
+        </header>
 
-        <!-- AI Assistant Tab -->
-        <div id="ai-chat" class="screen hidden">
-            <header>
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <button onclick="switchTab('system')"
-                        style="border: none; background: none; font-size: 1.5rem; cursor: pointer;">←</button>
-                    <h3 style="font-weight: 700;">Mahalla AI Yordamchi</h3>
+        <main>
+            <section class="banner">
+                <div class="banner-content">
+                    <h4>Mahalla AI bilan yanada oson!</h4>
+                    <p>Barcha davlat xizmatlari va mahalla yangiliklari endi bitta ilovada.</p>
+                    <button class="btn-primary" onclick="switchTab('chat')">AI Yordamchi</button>
                 </div>
-            </header>
-            <div class="chat-container" id="chat-messages">
-                <div class="message ai">
-                    <p>Assalomu alaykum! Men Mahalla AI yordamchisiman. Sizga qanday yordam bera olaman?</p>
+            </section>
+
+            <section class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-value">1,250</span>
+                    <span class="stat-label">Aholi</span>
                 </div>
+                <div class="stat-item">
+                    <span class="stat-value">98%</span>
+                    <span class="stat-label">Xizmatlar</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">4.9</span>
+                    <span class="stat-label">Reyting</span>
+                </div>
+            </section>
+
+            <section class="services-container">
+                <div class="section-title">
+                    <h3>Asosiy xizmatlar</h3>
+                    <a href="#">Barchasi</a>
+                </div>
+                <div class="grid">
+                    <div class="service-card" onclick="openService('certificates')">
+                        <div class="card-icon blue">📄</div>
+                        <span>Ma'lumotnoma</span>
+                    </div>
+                    <div class="service-card" onclick="openService('applications')">
+                        <div class="card-icon green">📝</div>
+                        <span>Arizalar</span>
+                    </div>
+                    <div class="service-card" onclick="openService('social')">
+                        <div class="card-icon orange">🛡️</div>
+                        <span>Ijtimoiy yordam</span>
+                    </div>
+                    <div class="service-card" onclick="openService('police')">
+                        <div class="card-icon purple">⚖️</div>
+                        <span>Huquqiy maslahat</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="news-container">
+                <div class="section-title">
+                    <h3>Mahalla yangiliklari</h3>
+                </div>
+                <div class="news-list">
+                    <div class="news-item">
+                        <div class="news-thumb"></div>
+                        <div class="news-info">
+                            <h5>"Obod Mahalla" yangi bosqichda</h5>
+                            <p>Mahallamizda yangi suv quvurlari o'tkazish ishlari boshlandi.</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-thumb"></div>
+                        <div class="news-info">
+                            <h5>Haftalik sport musobaqasi</h5>
+                            <p>Kelasi yakshanba kuni yoshlar o'rtasida mini-futbol turniri bo'lib o'tadi.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="switchTab('system')">
+                <div class="icon">🏠</div>
+                <span>Asosiy</span>
             </div>
-            <div class="chat-input-area">
-                <input type="text" placeholder="Xabaringizni yozing..." id="chat-input">
-                <button id="send-btn">🚀</button>
+            <div class="nav-item" onclick="openService('catalog')">
+                <div class="icon">📁</div>
+                <span>Katalog</span>
             </div>
-        </div>
+            <div class="nav-item" onclick="switchTab('chat')">
+                <div class="icon">💬</div>
+                <span>Chatbot</span>
+            </div>
+            <div class="nav-item" onclick="openService('profile')">
+                <div class="icon">👤</div>
+                <span>Profil</span>
+            </div>
+        </nav>
+    </div>
 
-        <!-- Mahalla Ish App -->
-        <div id="ish-app" class="screen hidden">
-            <header class="ish-header">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
-                    <h3 style="font-weight: 700; font-size: 1.1rem;">Mahalla Ish</h3>
+    <!-- Food App Screen -->
+    <div id="food-app" class="screen hidden">
+        <header class="food-header">
+            <div class="food-header-top">
+                <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
+                <div class="food-location">
+                    <span class="loc-icon">📍</span>
+                    <span id="food-user-location">Hozirgi joylashuvingiz</span>
                 </div>
-                <button class="add-job-btn" onclick="openAddJobModal()">+ Maxsus E'lon</button>
-            </header>
-
-            <div class="search-bar" style="margin: 20px;">
-                <input type="text" id="ish-search" placeholder="Kasb yoki ish qidirish...">
+                <button class="cart-btn">🛒<span class="cart-count">0</span></button>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Ovqat yoki restoran qidirish...">
                 <button class="filter-btn">🔍</button>
             </div>
+        </header>
 
-            <div class="ish-categories">
-                <div class="cat-item active" data-cat="all">Barchasi</div>
-                <div class="cat-item" data-cat="qurilish">🏗 Qurilish</div>
-                <div class="cat-item" data-cat="savdo">🛒 Savdo</div>
-                <div class="cat-item" data-cat="xizmat">👨‍🔧 Xizmat ko'rsatish</div>
-                <div class="cat-item" data-cat="it">💻 IT / Ta'lim</div>
+        <main class="food-main">
+            <section class="food-categories">
+                <div class="cat-item active">🍔 Barchasi</div>
+                <div class="cat-item">🍟 Fast Food</div>
+                <div class="cat-item">🥤 Ichimliklar</div>
+                <div class="cat-item">🍰 Shirinliklar</div>
+                <div class="cat-item">🍕 Pitsa</div>
+            </section>
+
+            <section class="food-offers">
+                <div class="offer-card">
+                    <div class="offer-content">
+                        <h3>20% CHEGIRMA</h3>
+                        <p>Ilk buyurtmangiz uchun maxsus taklif</p>
+                        <button class="btn-offer">Olish</button>
+                    </div>
+                    <div class="offer-img">
+                        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80"
+                            alt="Burger">
+                    </div>
+                </div>
+            </section>
+
+            <section class="food-nearby">
+                <div class="section-title">
+                    <h3>Yaqin atrofdagi joylar</h3>
+                    <a href="#">Barchasi</a>
+                </div>
+                <div class="food-grid" id="restaurants-list">
+                    <!-- Restaurants will be loaded here -->
+                    <div class="rest-card">
+                        <div class="rest-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80')">
+                            <span class="rating">⭐ 4.8</span>
+                        </div>
+                        <div class="rest-info">
+                            <h4>Gozzo Pitsa</h4>
+                            <p>Pitsa • Fast Food • 15-20 min</p>
+                        </div>
+                    </div>
+                    <div class="rest-card">
+                        <div class="rest-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&w=400&q=80')">
+                            <span class="rating">⭐ 4.5</span>
+                        </div>
+                        <div class="rest-info">
+                            <h4>Max Way</h4>
+                            <p>Burger • Lavash • 10-15 min</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="food-popular">
+                <div class="section-title">
+                    <h3>Ommabop taomlar</h3>
+                </div>
+                <div class="popular-list">
+                    <div class="food-item-horizontal">
+                        <div class="food-thumb"
+                            style="background-image: url('https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=200&q=80')">
+                        </div>
+                        <div class="food-details">
+                            <h5>Double Cheeseburger</h5>
+                            <p>Sershira go'sht va pishloq</p>
+                            <div class="price-row">
+                                <span class="price">35 000 so'm</span>
+                                <button class="add-to-cart">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Taxi App Screen -->
+    <div id="taxi-app" class="screen hidden">
+        <header class="taxi-header">
+            <div class="food-header-top">
+                <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
+                <h3 style="font-weight: 700; font-size: 1.1rem;">Mahalla Taxi</h3>
+                <div style="width: 40px;"></div>
+            </div>
+        </header>
+
+        <main class="taxi-main">
+            <!-- Map Placeholder -->
+            <div class="taxi-map">
+                <div class="map-overlay">
+                    <div class="map-pin">📍</div>
+                    <p>Joylashuvingiz aniqlanmoqda...</p>
+                </div>
             </div>
 
-            <div class="jobs-list" id="jobs-list">
-                <!-- Job cards will be injected by JS -->
+            <!-- Route Input -->
+            <div class="taxi-panel">
+                <div class="route-card">
+                    <div class="route-input">
+                        <div class="route-dot green"></div>
+                        <input type="text" id="taxi-from" placeholder="Qayerdan?" value="Hozirgi joylashuv">
+                    </div>
+                    <div class="route-line"></div>
+                    <div class="route-input">
+                        <div class="route-dot red"></div>
+                        <input type="text" id="taxi-to" placeholder="Qayerga?">
+                    </div>
+                </div>
+
+                <!-- Car Types -->
+                <div class="car-types">
+                    <div class="car-type active">
+                        <div class="car-icon">🚗</div>
+                        <div class="car-info">
+                            <h5>Standart</h5>
+                            <span>5 min</span>
+                        </div>
+                        <div class="car-price">8 000</div>
+                    </div>
+                    <div class="car-type">
+                        <div class="car-icon">🚙</div>
+                        <div class="car-info">
+                            <h5>Comfort</h5>
+                            <span>8 min</span>
+                        </div>
+                        <div class="car-price">15 000</div>
+                    </div>
+                    <div class="car-type">
+                        <div class="car-icon">🚐</div>
+                        <div class="car-info">
+                            <h5>Minivan</h5>
+                            <span>12 min</span>
+                        </div>
+                        <div class="car-price">20 000</div>
+                    </div>
+                </div>
+
+                <!-- Order Button -->
+                <button class="taxi-order-btn" onclick="orderTaxi()">
+                    Taksi chaqirish
+                </button>
             </div>
+        </main>
+    </div>
+
+    <!-- Market App Screen -->
+    <div id="market-app" class="screen hidden">
+        <header class="market-header">
+            <div class="food-header-top">
+                <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
+                <h3 style="font-weight: 700; font-size: 1.1rem;">Mahalla Market</h3>
+                <button class="cart-btn" onclick="openMarketCart()">🛒<span class="cart-count"
+                        id="market-cart-count">0</span></button>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="market-search" placeholder="Mahsulot qidirish...">
+                <button class="filter-btn">🔍</button>
+            </div>
+        </header>
+
+        <main class="market-main">
+            <!-- Categories -->
+            <section class="market-categories">
+                <div class="mcat-item active" data-cat="all">🏠 Barchasi</div>
+                <div class="mcat-item" data-cat="fruits">🍎 Mevalar</div>
+                <div class="mcat-item" data-cat="vegetables">🥦 Sabzavotlar</div>
+                <div class="mcat-item" data-cat="dairy">🧀 Sut mahsulotlari</div>
+                <div class="mcat-item" data-cat="meat">🥩 Go'sht</div>
+                <div class="mcat-item" data-cat="bread">🍞 Non</div>
+                <div class="mcat-item" data-cat="drinks">🧃 Ichimliklar</div>
+                <div class="mcat-item" data-cat="cleaning">🧽 Tozalik</div>
+            </section>
+
+            <!-- Nearby Stores -->
+            <section class="market-stores">
+                <div class="section-title">
+                    <h3>Yaqin do'konlar</h3>
+                </div>
+                <div class="store-scroll">
+                    <div class="store-chip active">🏪 Barcha do'konlar</div>
+                    <div class="store-chip">Korzinka</div>
+                    <div class="store-chip">Makro</div>
+                    <div class="store-chip">Havas</div>
+                </div>
+            </section>
+
+            <!-- Products Grid -->
+            <section class="market-products">
+                <div class="section-title">
+                    <h3>Mahsulotlar</h3>
+                    <span id="product-count">12 ta</span>
+                </div>
+                <div class="products-grid" id="products-grid">
+                    <div class="product-card" data-cat="fruits" data-name="Olma" data-price="12000">
+                        <div class="product-img" style="background: #fef3c7;"><span>🍎</span></div>
+                        <div class="product-info">
+                            <h5>Olma</h5>
+                            <p>1 kg</p>
+                            <div class="product-bottom">
+                                <span class="product-price">12 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-cat="fruits" data-name="Banan" data-price="18000">
+                        <div class="product-img" style="background: #fef9c3;"><span>🍌</span></div>
+                        <div class="product-info">
+                            <h5>Banan</h5>
+                            <p>1 kg</p>
+                            <div class="product-bottom">
+                                <span class="product-price">18 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-cat="vegetables" data-name="Pomidor" data-price="8000">
+                        <div class="product-img" style="background: #fee2e2;"><span>🍅</span></div>
+                        <div class="product-info">
+                            <h5>Pomidor</h5>
+                            <p>1 kg</p>
+                            <div class="product-bottom">
+                                <span class="product-price">8 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-cat="vegetables" data-name="Kartoshka" data-price="5000">
+                        <div class="product-img" style="background: #fef3c7;"><span>🥔</span></div>
+                        <div class="product-info">
+                            <h5>Kartoshka</h5>
+                            <p>1 kg</p>
+                            <div class="product-bottom">
+                                <span class="product-price">5 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-cat="dairy" data-name="Sut" data-price="14000">
+                        <div class="product-img" style="background: #eff6ff;"><span>🥛</span></div>
+                        <div class="product-info">
+                            <h5>Sut (1L)</h5>
+                            <p>Lactel</p>
+                            <div class="product-bottom">
+                                <span class="product-price">14 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-cat="dairy" data-name="Pishloq" data-price="32000">
+                        <div class="product-img" style="background: #fef9c3;"><span>🧀</span></div>
+                        <div class="product-info">
+                            <h5>Pishloq</h5>
+                            <p>1 kg</p>
+                            <div class="product-bottom">
+                                <span class="product-price">32 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-cat="meat" data-name="Mol go'shti" data-price="85000">
+                        <div class="product-img" style="background: #fee2e2;"><span>🥩</span></div>
+                        <div class="product-info">
+                            <h5>Mol go'shti</h5>
+                            <p>1 kg</p>
+                            <div class="product-bottom">
+                                <span class="product-price">85 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-cat="meat" data-name="Tovuq" data-price="28000">
+                        <div class="product-img" style="background: #fef3c7;"><span>🍗</span></div>
+                        <div class="product-info">
+                            <h5>Tovuq</h5>
+                            <p>1 kg</p>
+                            <div class="product-bottom">
+                                <span class="product-price">28 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-cat="bread" data-name="Non" data-price="3000">
+                        <div class="product-img" style="background: #fef3c7;"><span>🍞</span></div>
+                        <div class="product-info">
+                            <h5>Non (patir)</h5>
+                            <p>1 dona</p>
+                            <div class="product-bottom">
+                                <span class="product-price">3 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-cat="drinks" data-name="Coca-Cola" data-price="9000">
+                        <div class="product-img" style="background: #fee2e2;"><span>🧃</span></div>
+                        <div class="product-info">
+                            <h5>Coca-Cola</h5>
+                            <p>1.5L</p>
+                            <div class="product-bottom">
+                                <span class="product-price">9 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-cat="drinks" data-name="Suv" data-price="3000">
+                        <div class="product-img" style="background: #e0f2fe;"><span>💧</span></div>
+                        <div class="product-info">
+                            <h5>Nestle Pure</h5>
+                            <p>1.5L</p>
+                            <div class="product-bottom">
+                                <span class="product-price">3 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card" data-cat="cleaning" data-name="Kir yuvish" data-price="25000">
+                        <div class="product-img" style="background: #ede9fe;"><span>🧽</span></div>
+                        <div class="product-info">
+                            <h5>Ariel (1kg)</h5>
+                            <p>Kir yuvish kukuni</p>
+                            <div class="product-bottom">
+                                <span class="product-price">25 000</span>
+                                <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Floating Cart Bar -->
+        <div class="market-cart-bar hidden" id="market-cart-bar" onclick="openMarketCart()">
+            <div class="cart-bar-left">
+                <span class="cart-bar-icon">🛒</span>
+                <span class="cart-bar-text" id="cart-bar-items">0 ta mahsulot</span>
+            </div>
+            <div class="cart-bar-total" id="cart-bar-total">0 so'm</div>
         </div>
 
-        <!-- Add Job Modal -->
-        <div id="add-job-modal" class="modal-backdrop hidden">
-            <div class="modal">
+        <!-- Cart Modal -->
+        <div id="market-cart-modal" class="modal-backdrop hidden">
+            <div class="modal" style="max-height: 85vh; display: flex; flex-direction: column;">
                 <div class="modal-header">
                     <div style="display: flex; justify-content: space-between; align-items: start;">
                         <div>
-                            <h3>E'lon berish</h3>
-                            <p>Yangi ish o'rnini tizimga qo'shish</p>
+                            <h3>Savatingiz</h3>
+                            <p>Buyurtmani tasdiqlang</p>
                         </div>
-                        <button onclick="closeAddJobModal()"
+                        <button onclick="closeMarketCart()"
                             style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
                     </div>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Lavozim (Kasb)</label>
-                        <input type="text" id="job-title" placeholder="Masalan: Sotuvchi ustasi">
-                    </div>
-                    <div class="form-group">
-                        <label>Kategoriya</label>
-                        <select id="job-cat">
-                            <option value="qurilish">Qurilish</option>
-                            <option value="savdo">Savdo</option>
-                            <option value="xizmat">Xizmat ko'rsatish</option>
-                            <option value="it">IT / Ta'lim</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Maosh (So'm)</label>
-                        <input type="text" id="job-salary" placeholder="Masalan: 3 000 000 - 5 000 000">
-                    </div>
-                    <div class="form-group">
-                        <label>Telefon raqam</label>
-                        <input type="tel" id="job-phone" placeholder="+998 90 123 45 67">
-                    </div>
+                <div class="modal-body" style="overflow-y: auto; flex: 1;" id="cart-items-list">
+                    <p style="text-align: center; color: var(--text-muted); padding: 20px;">Savat bo'sh</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-primary" style="width: 100%;" onclick="submitJob()">Tartibni joylash</button>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-weight: 600;">Jami:</span>
+                        <span style="font-weight: 800; font-size: 1.2rem; color: var(--primary);"
+                            id="cart-modal-total">0 so'm</span>
+                    </div>
+                    <button class="btn-primary"
+                        style="width: 100%; padding: 14px; border-radius: 14px; font-size: 1rem;"
+                        onclick="placeMarketOrder()">Buyurtma berish</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- AB Education App -->
-        <div id="abedu-app" class="screen hidden" style="padding-bottom: 0;">
-            <header class="abedu-header">
+    <!-- AI Assistant Tab -->
+    <div id="ai-chat" class="screen hidden">
+        <header>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button onclick="switchTab('system')"
+                    style="border: none; background: none; font-size: 1.5rem; cursor: pointer;">←</button>
+                <h3 style="font-weight: 700;">Mahalla AI Yordamchi</h3>
+            </div>
+        </header>
+        <div class="chat-container" id="chat-messages">
+            <div class="message ai">
+                <p>Assalomu alaykum! Men Mahalla AI yordamchisiman. Sizga qanday yordam bera olaman?</p>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" placeholder="Xabaringizni yozing..." id="chat-input">
+            <button id="send-btn">🚀</button>
+        </div>
+    </div>
+
+    <!-- Mahalla Ish App -->
+    <div id="ish-app" class="screen hidden">
+        <header class="ish-header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
+                <h3 style="font-weight: 700; font-size: 1.1rem;">Mahalla Ish</h3>
+            </div>
+            <button class="add-job-btn" onclick="openAddJobModal()">+ Maxsus E'lon</button>
+        </header>
+
+        <div class="search-bar" style="margin: 20px;">
+            <input type="text" id="ish-search" placeholder="Kasb yoki ish qidirish...">
+            <button class="filter-btn">🔍</button>
+        </div>
+
+        <div class="ish-categories">
+            <div class="cat-item active" data-cat="all">Barchasi</div>
+            <div class="cat-item" data-cat="qurilish">🏗 Qurilish</div>
+            <div class="cat-item" data-cat="savdo">🛒 Savdo</div>
+            <div class="cat-item" data-cat="xizmat">👨‍🔧 Xizmat ko'rsatish</div>
+            <div class="cat-item" data-cat="it">💻 IT / Ta'lim</div>
+        </div>
+
+        <div class="jobs-list" id="jobs-list">
+            <!-- Job cards will be injected by JS -->
+        </div>
+    </div>
+
+    <!-- Add Job Modal -->
+    <div id="add-job-modal" class="modal-backdrop hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <h3>E'lon berish</h3>
+                        <p>Yangi ish o'rnini tizimga qo'shish</p>
+                    </div>
+                    <button onclick="closeAddJobModal()"
+                        style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Lavozim (Kasb)</label>
+                    <input type="text" id="job-title" placeholder="Masalan: Sotuvchi ustasi">
+                </div>
+                <div class="form-group">
+                    <label>Kategoriya</label>
+                    <select id="job-cat">
+                        <option value="qurilish">Qurilish</option>
+                        <option value="savdo">Savdo</option>
+                        <option value="xizmat">Xizmat ko'rsatish</option>
+                        <option value="it">IT / Ta'lim</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Maosh (So'm)</label>
+                    <input type="text" id="job-salary" placeholder="Masalan: 3 000 000 - 5 000 000">
+                </div>
+                <div class="form-group">
+                    <label>Telefon raqam</label>
+                    <input type="tel" id="job-phone" placeholder="+998 90 123 45 67">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" style="width: 100%;" onclick="submitJob()">Tartibni joylash</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AB Education App -->
+    <div id="abedu-app" class="screen hidden" style="padding-bottom: 0;">
+        <header class="abedu-header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
+                <h3 style="font-weight: 700; font-size: 1.1rem; color: white;">AB Education</h3>
+            </div>
+        </header>
+        <div class="iframe-container">
+            <iframe src="https://abedu.uz" frameborder="0" width="100%" height="100%"></iframe>
+        </div>
+    </div>
+
+    <!-- Mahalla Biznes App (Admin/Owner View) -->
+    <div id="biznes-app" class="screen hidden" style="background:#f1f5f9; padding-bottom:80px;">
+        <header class="biznes-header">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px;">
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
-                    <h3 style="font-weight: 700; font-size: 1.1rem; color: white;">AB Education</h3>
+                    <h3 style="font-weight: 700; font-size: 1.1rem; color: #1e293b;">Mahalla Biznes</h3>
                 </div>
-            </header>
-            <div class="iframe-container">
-                <iframe src="https://abedu.uz" frameborder="0" width="100%" height="100%"></iframe>
             </div>
-        </div>
+        </header>
 
-        <!-- Profile Setup Modal -->
-        <div id="profile-modal" class="modal-backdrop hidden">
-            <div class="modal">
-                <div class="modal-header">
-                    <div style="display: flex; justify-content: space-between; align-items: start;">
-                        <div>
-                            <h3>Profilni to'ldiring</h3>
-                            <p>Xizmatlardan foydalanish uchun hududingizni kiriting</p>
+        <main class="biznes-main">
+            <!-- If no business, show creation view -->
+            <div id="biznes-create-view" style="padding: 20px;">
+                <div class="empty-state-biznes">
+                    <div class="biz-illustration">🏪</div>
+                    <h2>Biznesingiz ro'yxatda yo'qmi?</h2>
+                    <p>Mahalla AI tarmog'ida o'z do'kon, oshxona yoki xizmatingizni oching va qo'shnilarga sotishni
+                        boshlang!</p>
+
+                    <div class="biz-form">
+                        <div class="form-group">
+                            <label>Biznes nomi</label>
+                            <input type="text" id="biz-name" placeholder="Masalan: 'Oq-tepa lavash' yoki 'Bek Do'koni'">
                         </div>
-                        <button onclick="closeProfileModal()"
-                            style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+                        <div class="form-group">
+                            <label>Biznes sohasi</label>
+                            <select id="biz-category">
+                                <option value="food">🍱 Fast Food & Oshxona</option>
+                                <option value="market">🛒 Oziq-ovqat va Market</option>
+                                <option value="service">🔧 Xizmat ko'rsatish</option>
+                                <option value="other">📦 Boshqa</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" style="width:100%; padding:16px; border-radius:16px;"
+                            onclick="createBiznes()">Biznesni Yaratish 🪄</button>
                     </div>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Viloyat / Shaxar</label>
-                        <select id="setup-region">
-                            <option value="">Tanlang...</option>
-                            <option value="Toshkent sh.">Toshkent sh.</option>
-                            <option value="Toshkent vil.">Toshkent vil.</option>
-                            <option value="Samarqand">Samarqand</option>
-                            <option value="Buxoro">Buxoro</option>
-                            <option value="Namangan">Namangan</option>
-                            <option value="Farg'ona">Farg'ona</option>
-                            <option value="Andijon">Andijon</option>
-                            <option value="Qashqadaryo">Qashqadaryo</option>
-                            <option value="Surxondaryo">Surxondaryo</option>
-                            <option value="Jizzax">Jizzax</option>
-                            <option value="Sirdaryo">Sirdaryo</option>
-                            <option value="Xorazm">Xorazm</option>
-                            <option value="Navoiy">Navoiy</option>
-                            <option value="Qoraqalpog'iston">Qoraqalpog'iston</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Mahalla nomi</label>
-                        <input type="text" id="setup-mahalla" placeholder="Masalan: Alisher Navoiy">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn-primary" style="width: 100%;" id="save-profile">Saqlash</button>
                 </div>
             </div>
+
+            <!-- If user has business, show dashboard view -->
+            <div id="biznes-dashboard-view" class="hidden">
+                <!-- Dashboard header details -->
+                <div class="biz-profile-card">
+                    <div class="biz-profile-header">
+                        <div class="biz-logo" id="biz-dash-logo">B</div>
+                        <div class="biz-info">
+                            <h2 id="biz-dash-name">Biznes Nomi</h2>
+                            <p id="biz-dash-cat">🛒 Market</p>
+                        </div>
+                        <button class="biz-edit-btn">⚙️</button>
+                    </div>
+                    <div class="biz-stats-grid">
+                        <div class="bz-stat">
+                            <span>Kassa (Bugun)</span>
+                            <h4>0 so'm</h4>
+                        </div>
+                        <div class="bz-stat">
+                            <span>Buyurtmalar</span>
+                            <h4>0 ta</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="biz-tabs">
+                    <button class="bz-tab active" data-target="bz-orders">Buyurtmalar <span
+                            class="badge">0</span></button>
+                    <button class="bz-tab" data-target="bz-products">Mahsulotlar</button>
+                    <button class="bz-tab" data-target="bz-settings">Sozlamalar</button>
+                </div>
+
+                <div class="bz-content-area">
+                    <!-- Orders Tab -->
+                    <div id="bz-orders" class="bz-tab-content active">
+                        <div class="empty-orders">
+                            <span>📝</span>
+                            <p>Hozircha yangi buyurtmalar yo'q</p>
+                        </div>
+                    </div>
+
+                    <!-- Products Tab -->
+                    <div id="bz-products" class="bz-tab-content hidden">
+                        <button class="btn-outline-primary"
+                            style="width:100%; padding:14px; border-radius:12px; margin-bottom:15px; background: white; border: 2px dashed #cbd5e1; font-weight: 600; cursor:pointer; display:flex; gap:10px; align-items:center; justify-content:center; color: var(--primary);">
+                            <span>➕</span> Yangi mahsulot qo'shish
+                        </button>
+                        <div class="bz-product-list">
+                            <p style="text-align:center; color:#94a3b8; font-size:0.9rem; margin-top: 20px;">Hali
+                                mahsulot qo'shmadingiz</p>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div id="bz-settings" class="bz-tab-content hidden">
+                        <div class="bz-card">
+                            <h4>Do'kon holati</h4>
+                            <div
+                                style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                                <span>Ochiq/Yopiq</span>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="bz-card" style="margin-top:15px;">
+                            <h4>Yetkazib berish</h4>
+                            <div class="form-group" style="margin-top:10px;">
+                                <label style="font-size:0.8rem;">Dastavka narxi (so'm)</label>
+                                <input type="number" placeholder="5000">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Profile Setup Modal -->
+    <div id="profile-modal" class="modal-backdrop hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <h3>Profilni to'ldiring</h3>
+                        <p>Xizmatlardan foydalanish uchun hududingizni kiriting</p>
+                    </div>
+                    <button onclick="closeProfileModal()"
+                        style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Viloyat / Shaxar</label>
+                    <select id="setup-region">
+                        <option value="">Tanlang...</option>
+                        <option value="Toshkent sh.">Toshkent sh.</option>
+                        <option value="Toshkent vil.">Toshkent vil.</option>
+                        <option value="Samarqand">Samarqand</option>
+                        <option value="Buxoro">Buxoro</option>
+                        <option value="Namangan">Namangan</option>
+                        <option value="Farg'ona">Farg'ona</option>
+                        <option value="Andijon">Andijon</option>
+                        <option value="Qashqadaryo">Qashqadaryo</option>
+                        <option value="Surxondaryo">Surxondaryo</option>
+                        <option value="Jizzax">Jizzax</option>
+                        <option value="Sirdaryo">Sirdaryo</option>
+                        <option value="Xorazm">Xorazm</option>
+                        <option value="Navoiy">Navoiy</option>
+                        <option value="Qoraqalpog'iston">Qoraqalpog'iston</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mahalla nomi</label>
+                    <input type="text" id="setup-mahalla" placeholder="Masalan: Alisher Navoiy">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" style="width: 100%;" id="save-profile">Saqlash</button>
+            </div>
         </div>
+    </div>
     </div>
 
     <script src="js/core.js"></script>
@@ -747,6 +872,7 @@
     <script src="js/taxi.js"></script>
     <script src="js/market.js"></script>
     <script src="js/ish.js"></script>
+    <script src="js/biznes.js"></script>
 </body>
 
 </html>
