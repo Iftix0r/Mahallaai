@@ -32,6 +32,10 @@ async function init() {
             } else {
                 userName.textContent = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
                 userAvatar.textContent = tgUser.first_name.charAt(0);
+                if (typeof window.updateAuthState === 'function') {
+                    window.isLoggedIn = true;
+                    window.updateAuthState();
+                }
             }
         } catch (e) {
             console.error("Data fetch error:", e);
@@ -98,6 +102,11 @@ function updateUI(user) {
         document.getElementById('food-user-location').textContent = `${user.mahalla || ''} mahalla`;
     } else {
         userRegion.textContent = "Hudud belgilanmagan";
+    }
+    // Update global auth state if login button exists
+    if (typeof window.updateAuthState === 'function') {
+        window.isLoggedIn = true;
+        window.updateAuthState();
     }
 }
 
