@@ -47,7 +47,8 @@ async function init() {
             'system': 'dashboard',
             'food': 'food-app',
             'taxi': 'taxi-app',
-            'market': 'market-app'
+            'market': 'market-app',
+            'ish': 'ish-app'
         };
 
         const target = tabMap[tab] || 'selection-screen';
@@ -148,7 +149,8 @@ function switchTab(tabId) {
         'chat': 'ai-chat',
         'food': 'food-app',
         'taxi': 'taxi-app',
-        'market': 'market-app'
+        'market': 'market-app',
+        'ish': 'ish-app'
     };
 
     const targetScreenId = screens[tabId];

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/food.css">
     <link rel="stylesheet" href="css/taxi.css">
     <link rel="stylesheet" href="css/market.css">
+    <link rel="stylesheet" href="css/ish.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
@@ -75,6 +76,14 @@
                     <div class="card-text">
                         <h3>Mahalla Market</h3>
                         <p>Yaqin do'konlardan mahsulotlar buyurtma qiling</p>
+                    </div>
+                </div>
+                <div class="selection-card ish" onclick="switchTab('ish')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon-large">💼</div>
+                    <div class="card-text">
+                        <h3>Mahalla Ish</h3>
+                        <p>Bo'sh ish o'rinlari va e'lonlar markazi</p>
                     </div>
                 </div>
             </div>
@@ -593,6 +602,77 @@
                 <button id="send-btn">🚀</button>
             </div>
         </div>
+
+        <!-- Mahalla Ish App -->
+        <div id="ish-app" class="screen hidden">
+            <header class="ish-header">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
+                    <h3 style="font-weight: 700; font-size: 1.1rem;">Mahalla Ish</h3>
+                </div>
+                <button class="add-job-btn" onclick="openAddJobModal()">+ Maxsus E'lon</button>
+            </header>
+
+            <div class="search-bar" style="margin: 20px;">
+                <input type="text" id="ish-search" placeholder="Kasb yoki ish qidirish...">
+                <button class="filter-btn">🔍</button>
+            </div>
+
+            <div class="ish-categories">
+                <div class="cat-item active" data-cat="all">Barchasi</div>
+                <div class="cat-item" data-cat="qurilish">🏗 Qurilish</div>
+                <div class="cat-item" data-cat="savdo">🛒 Savdo</div>
+                <div class="cat-item" data-cat="xizmat">👨‍🔧 Xizmat ko'rsatish</div>
+                <div class="cat-item" data-cat="it">💻 IT / Ta'lim</div>
+            </div>
+
+            <div class="jobs-list" id="jobs-list">
+                <!-- Job cards will be injected by JS -->
+            </div>
+        </div>
+
+        <!-- Add Job Modal -->
+        <div id="add-job-modal" class="modal-backdrop hidden">
+            <div class="modal">
+                <div class="modal-header">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <h3>E'lon berish</h3>
+                            <p>Yangi ish o'rnini tizimga qo'shish</p>
+                        </div>
+                        <button onclick="closeAddJobModal()"
+                            style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Lavozim (Kasb)</label>
+                        <input type="text" id="job-title" placeholder="Masalan: Sotuvchi ustasi">
+                    </div>
+                    <div class="form-group">
+                        <label>Kategoriya</label>
+                        <select id="job-cat">
+                            <option value="qurilish">Qurilish</option>
+                            <option value="savdo">Savdo</option>
+                            <option value="xizmat">Xizmat ko'rsatish</option>
+                            <option value="it">IT / Ta'lim</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Maosh (So'm)</label>
+                        <input type="text" id="job-salary" placeholder="Masalan: 3 000 000 - 5 000 000">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon raqam</label>
+                        <input type="tel" id="job-phone" placeholder="+998 90 123 45 67">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-primary" style="width: 100%;" onclick="submitJob()">Tartibni joylash</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Profile Setup Modal -->
         <div id="profile-modal" class="modal-backdrop hidden">
             <div class="modal">
@@ -644,6 +724,7 @@
     <script src="js/food.js"></script>
     <script src="js/taxi.js"></script>
     <script src="js/market.js"></script>
+    <script src="js/ish.js"></script>
 </body>
 
 </html>

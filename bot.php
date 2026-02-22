@@ -22,7 +22,8 @@ if ($chat_id) {
                     [['text' => "🏢 Tizimga kirish", 'web_app' => ['url' => WEBAPP_URL . "?tab=system"]]],
                     [['text' => "🍔 Mahalla tezkor ovqatlar", 'web_app' => ['url' => WEBAPP_URL . "?tab=food"]]],
                     [['text' => "🚕 Mahalla Taxi", 'web_app' => ['url' => WEBAPP_URL . "?tab=taxi"]]],
-                    [['text' => "🛒 Mahalla Market", 'web_app' => ['url' => WEBAPP_URL . "?tab=market"]]]
+                    [['text' => "🛒 Mahalla Market", 'web_app' => ['url' => WEBAPP_URL . "?tab=market"]]],
+                    [['text' => "💼 Mahalla Ishlar", 'web_app' => ['url' => WEBAPP_URL . "?tab=ish"]]]
                 ]
             ]);
         } else {
@@ -64,7 +65,8 @@ if ($chat_id) {
                     [['text' => "🏢 Tizimga kirish", 'web_app' => ['url' => WEBAPP_URL . "?tab=system"]]],
                     [['text' => "🍔 Mahalla tezkor ovqatlar", 'web_app' => ['url' => WEBAPP_URL . "?tab=food"]]],
                     [['text' => "🚕 Mahalla Taxi", 'web_app' => ['url' => WEBAPP_URL . "?tab=taxi"]]],
-                    [['text' => "🛒 Mahalla Market", 'web_app' => ['url' => WEBAPP_URL . "?tab=market"]]]
+                    [['text' => "🛒 Mahalla Market", 'web_app' => ['url' => WEBAPP_URL . "?tab=market"]]],
+                    [['text' => "💼 Mahalla Ish", 'web_app' => ['url' => WEBAPP_URL . "?tab=ish"]]]
                 ]
             ]);
         }

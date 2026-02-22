@@ -1,0 +1,144 @@
+/* ========================================
+   MAHALLA ISH APP - Ish e'lonlari
+   ======================================== */
+
+#ish-app {
+    background: #ffffff;
+    padding-bottom: 80px;
+}
+
+.ish-header {
+    padding: 20px;
+    background: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-job-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-job-btn:active {
+    transform: scale(0.95);
+}
+
+/* Categories */
+.ish-categories {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 0 20px 15px;
+    scrollbar-width: none;
+}
+
+.ish-categories::-webkit-scrollbar {
+    display: none;
+}
+
+/* Selection Card specific */
+.selection-card.ish {
+    background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
+}
+
+.selection-card.ish .card-icon-large {
+    background: #fef9c3;
+}
+
+/* Job Cards */
+.jobs-list {
+    padding: 0 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.job-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 18px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    position: relative;
+    overflow: hidden;
+}
+
+.job-tag {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.job-tag.urgent {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.job-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 6px;
+    padding-right: 60px;
+}
+
+.job-salary {
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+}
+
+.job-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.job-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.job-btn {
+    width: 100%;
+    background: #f1f5f9;
+    color: #0f172a;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.job-btn:active {
+    background: var(--primary);
+    color: white;
+}
