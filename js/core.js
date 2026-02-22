@@ -204,5 +204,25 @@ function openService(service) {
     });
 }
 
+// ===== GLOBAL SEARCH (Selection Screen) =====
+const globalSearch = document.getElementById('global-search');
+if (globalSearch) {
+    globalSearch.addEventListener('input', function () {
+        const query = this.value.toLowerCase();
+        const cards = document.querySelectorAll('#main-services-grid .selection-card');
+
+        cards.forEach(card => {
+            const title = card.querySelector('h3').textContent.toLowerCase();
+            const desc = card.querySelector('p').textContent.toLowerCase();
+
+            if (title.includes(query) || desc.includes(query)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+}
+
 // Start!
 init();
