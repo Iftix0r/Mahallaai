@@ -1,0 +1,244 @@
+/* ========================================
+   FOOD APP - Mahalla Fast Food
+   ======================================== */
+
+#food-app {
+    background: #ffffff;
+    padding-bottom: 20px;
+}
+
+.food-header {
+    padding: 20px;
+    background: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.food-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.food-location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.cart-btn {
+    background: #f1f5f9;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    position: relative;
+    cursor: pointer;
+}
+
+.cart-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.65rem;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    border: 2px solid white;
+}
+
+.food-categories {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 15px 20px;
+    scrollbar-width: none;
+}
+
+.food-categories::-webkit-scrollbar {
+    display: none;
+}
+
+.cat-item {
+    white-space: nowrap;
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: #f1f5f9;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.cat-item.active {
+    background: var(--primary);
+    color: white;
+}
+
+.food-offers {
+    padding: 0 20px 20px;
+}
+
+.offer-card {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.offer-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+
+.offer-content p {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    margin-bottom: 12px;
+}
+
+.btn-offer {
+    background: #fbbf24;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #000;
+}
+
+.offer-img img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.food-grid {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 0 20px 20px;
+    scrollbar-width: none;
+}
+
+.food-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.rest-card {
+    min-width: 200px;
+}
+
+.rest-img {
+    height: 130px;
+    border-radius: 18px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.rating {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.rest-info {
+    padding: 12px 4px;
+}
+
+.rest-info h4 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.rest-info p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.popular-list {
+    padding: 0 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.food-item-horizontal {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 18px;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.food-thumb {
+    width: 65px;
+    height: 65px;
+    border-radius: 14px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.food-details {
+    flex: 1;
+}
+
+.food-details h5 {
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+
+.food-details p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+.add-to-cart {
+    background: var(--surface);
+    border: 1px solid #e2e8f0;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
