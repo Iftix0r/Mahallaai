@@ -505,6 +505,23 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
                 <i class="fas fa-newspaper"></i> Yangiliklar
             </a>
 
+            <div class="nav-section-title">Xizmatlar Boshqaruvi</div>
+            <a href="food.php" class="nav-link <?php echo $currentPage == 'food' ? 'active' : ''; ?>">
+                <i class="fas fa-burger"></i> Fast Food
+            </a>
+            <a href="taxi.php" class="nav-link <?php echo $currentPage == 'taxi' ? 'active' : ''; ?>">
+                <i class="fas fa-taxi"></i> Taxi Xizmati
+            </a>
+            <a href="market.php" class="nav-link <?php echo $currentPage == 'market' ? 'active' : ''; ?>">
+                <i class="fas fa-shopping-cart"></i> Marketlar
+            </a>
+            <a href="ish.php" class="nav-link <?php echo $currentPage == 'ish' ? 'active' : ''; ?>">
+                <i class="fas fa-briefcase"></i> Bo'sh Ish O'rinlari
+            </a>
+            <a href="biznes.php" class="nav-link <?php echo $currentPage == 'biznes' ? 'active' : ''; ?>">
+                <i class="fas fa-store"></i> Biznes va Do'konlar
+            </a>
+
             <div class="nav-section-title">Tizim</div>
             <a href="settings.php" class="nav-link <?php echo $currentPage == 'settings' ? 'active' : ''; ?>">
                 <i class="fas fa-cog"></i> Sozlamalar
