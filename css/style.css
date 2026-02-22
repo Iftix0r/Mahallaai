@@ -1036,3 +1036,244 @@ header {
 .taxi-order-btn:active {
     transform: scale(0.98);
 }
+
+/* Market Selection Card */
+.selection-card.market {
+    background: linear-gradient(135deg, #ffffff 0%, #ede9fe 100%);
+}
+
+.selection-card.market .card-icon-large {
+    background: #e0e7ff;
+}
+
+/* Market App Styles */
+#market-app {
+    background: #ffffff;
+    padding-bottom: 80px;
+}
+
+.market-header {
+    padding: 20px;
+    background: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.market-main {
+    padding-top: 5px;
+}
+
+.market-categories {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 20px 15px;
+    scrollbar-width: none;
+}
+
+.market-categories::-webkit-scrollbar {
+    display: none;
+}
+
+.mcat-item {
+    white-space: nowrap;
+    padding: 8px 14px;
+    border-radius: 12px;
+    background: #f1f5f9;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mcat-item.active {
+    background: var(--primary);
+    color: white;
+}
+
+.market-stores {
+    padding: 0 20px 10px;
+}
+
+.store-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    scrollbar-width: none;
+}
+
+.store-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.store-chip {
+    white-space: nowrap;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #e2e8f0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.store-chip.active {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.market-products {
+    padding: 0 20px;
+}
+
+.market-products .section-title span {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    padding-bottom: 20px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid #f1f5f9;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.product-card:active {
+    transform: scale(0.97);
+}
+
+.product-img {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-img span {
+    font-size: 3rem;
+}
+
+.product-info {
+    padding: 12px;
+}
+
+.product-info h5 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+}
+
+.product-info p {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+.product-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-price {
+    font-weight: 800;
+    color: var(--primary);
+    font-size: 0.85rem;
+}
+
+.product-price::after {
+    content: " so'm";
+    font-weight: 400;
+    font-size: 0.7rem;
+    color: #94a3b8;
+}
+
+.add-product-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    color: var(--primary);
+}
+
+.add-product-btn:active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* Floating Cart Bar */
+.market-cart-bar {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: #1e293b;
+    color: white;
+    padding: 16px 20px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    z-index: 999;
+    cursor: pointer;
+    transition: all 0.3s;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.cart-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cart-bar-icon {
+    font-size: 1.2rem;
+}
+
+.cart-bar-text {
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.cart-bar-total {
+    font-size: 1rem;
+    font-weight: 800;
+}

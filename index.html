@@ -57,6 +57,14 @@
                         <p>Tezkor va arzon taksi xizmati</p>
                     </div>
                 </div>
+                <div class="selection-card market" onclick="switchTab('market')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon-large">🛒</div>
+                    <div class="card-text">
+                        <h3>Mahalla Market</h3>
+                        <p>Yaqin do'konlardan mahsulotlar buyurtma qiling</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -328,6 +336,230 @@
                     </button>
                 </div>
             </main>
+        </div>
+
+        <!-- Market App Screen -->
+        <div id="market-app" class="screen hidden">
+            <header class="market-header">
+                <div class="food-header-top">
+                    <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
+                    <h3 style="font-weight: 700; font-size: 1.1rem;">Mahalla Market</h3>
+                    <button class="cart-btn" onclick="openMarketCart()">🛒<span class="cart-count"
+                            id="market-cart-count">0</span></button>
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="market-search" placeholder="Mahsulot qidirish...">
+                    <button class="filter-btn">🔍</button>
+                </div>
+            </header>
+
+            <main class="market-main">
+                <!-- Categories -->
+                <section class="market-categories">
+                    <div class="mcat-item active" data-cat="all">🏠 Barchasi</div>
+                    <div class="mcat-item" data-cat="fruits">🍎 Mevalar</div>
+                    <div class="mcat-item" data-cat="vegetables">🥦 Sabzavotlar</div>
+                    <div class="mcat-item" data-cat="dairy">🧀 Sut mahsulotlari</div>
+                    <div class="mcat-item" data-cat="meat">🥩 Go'sht</div>
+                    <div class="mcat-item" data-cat="bread">🍞 Non</div>
+                    <div class="mcat-item" data-cat="drinks">🧃 Ichimliklar</div>
+                    <div class="mcat-item" data-cat="cleaning">🧽 Tozalik</div>
+                </section>
+
+                <!-- Nearby Stores -->
+                <section class="market-stores">
+                    <div class="section-title">
+                        <h3>Yaqin do'konlar</h3>
+                    </div>
+                    <div class="store-scroll">
+                        <div class="store-chip active">🏪 Barcha do'konlar</div>
+                        <div class="store-chip">Korzinka</div>
+                        <div class="store-chip">Makro</div>
+                        <div class="store-chip">Havas</div>
+                    </div>
+                </section>
+
+                <!-- Products Grid -->
+                <section class="market-products">
+                    <div class="section-title">
+                        <h3>Mahsulotlar</h3>
+                        <span id="product-count">12 ta</span>
+                    </div>
+                    <div class="products-grid" id="products-grid">
+                        <div class="product-card" data-cat="fruits" data-name="Olma" data-price="12000">
+                            <div class="product-img" style="background: #fef3c7;"><span>🍎</span></div>
+                            <div class="product-info">
+                                <h5>Olma</h5>
+                                <p>1 kg</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">12 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card" data-cat="fruits" data-name="Banan" data-price="18000">
+                            <div class="product-img" style="background: #fef9c3;"><span>🍌</span></div>
+                            <div class="product-info">
+                                <h5>Banan</h5>
+                                <p>1 kg</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">18 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card" data-cat="vegetables" data-name="Pomidor" data-price="8000">
+                            <div class="product-img" style="background: #fee2e2;"><span>🍅</span></div>
+                            <div class="product-info">
+                                <h5>Pomidor</h5>
+                                <p>1 kg</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">8 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card" data-cat="vegetables" data-name="Kartoshka" data-price="5000">
+                            <div class="product-img" style="background: #fef3c7;"><span>🥔</span></div>
+                            <div class="product-info">
+                                <h5>Kartoshka</h5>
+                                <p>1 kg</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">5 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card" data-cat="dairy" data-name="Sut" data-price="14000">
+                            <div class="product-img" style="background: #eff6ff;"><span>🥛</span></div>
+                            <div class="product-info">
+                                <h5>Sut (1L)</h5>
+                                <p>Lactel</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">14 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card" data-cat="dairy" data-name="Pishloq" data-price="32000">
+                            <div class="product-img" style="background: #fef9c3;"><span>🧀</span></div>
+                            <div class="product-info">
+                                <h5>Pishloq</h5>
+                                <p>1 kg</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">32 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card" data-cat="meat" data-name="Mol go'shti" data-price="85000">
+                            <div class="product-img" style="background: #fee2e2;"><span>🥩</span></div>
+                            <div class="product-info">
+                                <h5>Mol go'shti</h5>
+                                <p>1 kg</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">85 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card" data-cat="meat" data-name="Tovuq" data-price="28000">
+                            <div class="product-img" style="background: #fef3c7;"><span>🍗</span></div>
+                            <div class="product-info">
+                                <h5>Tovuq</h5>
+                                <p>1 kg</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">28 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card" data-cat="bread" data-name="Non" data-price="3000">
+                            <div class="product-img" style="background: #fef3c7;"><span>🍞</span></div>
+                            <div class="product-info">
+                                <h5>Non (patir)</h5>
+                                <p>1 dona</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">3 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card" data-cat="drinks" data-name="Coca-Cola" data-price="9000">
+                            <div class="product-img" style="background: #fee2e2;"><span>🧃</span></div>
+                            <div class="product-info">
+                                <h5>Coca-Cola</h5>
+                                <p>1.5L</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">9 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card" data-cat="drinks" data-name="Suv" data-price="3000">
+                            <div class="product-img" style="background: #e0f2fe;"><span>💧</span></div>
+                            <div class="product-info">
+                                <h5>Nestle Pure</h5>
+                                <p>1.5L</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">3 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-card" data-cat="cleaning" data-name="Kir yuvish" data-price="25000">
+                            <div class="product-img" style="background: #ede9fe;"><span>🧽</span></div>
+                            <div class="product-info">
+                                <h5>Ariel (1kg)</h5>
+                                <p>Kir yuvish kukuni</p>
+                                <div class="product-bottom">
+                                    <span class="product-price">25 000</span>
+                                    <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- Floating Cart Bar -->
+            <div class="market-cart-bar hidden" id="market-cart-bar" onclick="openMarketCart()">
+                <div class="cart-bar-left">
+                    <span class="cart-bar-icon">🛒</span>
+                    <span class="cart-bar-text" id="cart-bar-items">0 ta mahsulot</span>
+                </div>
+                <div class="cart-bar-total" id="cart-bar-total">0 so'm</div>
+            </div>
+
+            <!-- Cart Modal -->
+            <div id="market-cart-modal" class="modal-backdrop hidden">
+                <div class="modal" style="max-height: 85vh; display: flex; flex-direction: column;">
+                    <div class="modal-header">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h3>Savatingiz</h3>
+                                <p>Buyurtmani tasdiqlang</p>
+                            </div>
+                            <button onclick="closeMarketCart()"
+                                style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+                        </div>
+                    </div>
+                    <div class="modal-body" style="overflow-y: auto; flex: 1;" id="cart-items-list">
+                        <p style="text-align: center; color: var(--text-muted); padding: 20px;">Savat bo'sh</p>
+                    </div>
+                    <div class="modal-footer">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span style="font-weight: 600;">Jami:</span>
+                            <span style="font-weight: 800; font-size: 1.2rem; color: var(--primary);"
+                                id="cart-modal-total">0 so'm</span>
+                        </div>
+                        <button class="btn-primary"
+                            style="width: 100%; padding: 14px; border-radius: 14px; font-size: 1rem;"
+                            onclick="placeMarketOrder()">Buyurtma berish</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- AI Assistant Tab -->
