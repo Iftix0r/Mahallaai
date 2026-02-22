@@ -18,6 +18,12 @@ if ($method == 'GET') {
         $user = $stmt->fetch();
         echo json_encode($user ?: ['error' => 'User not found']);
     }
+
+    if ($action == 'get_news') {
+        $stmt = $db->query("SELECT * FROM news ORDER BY created_at DESC");
+        $news = $stmt->fetchAll();
+        echo json_encode($news);
+    }
 }
 
 if ($method == 'POST') {

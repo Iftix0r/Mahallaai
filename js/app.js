@@ -49,6 +49,34 @@ async function init() {
             fadeOutIn('loading', 'selection-screen');
         }
     }, 1500);
+
+    loadNews();
+}
+
+async function loadNews() {
+    try {
+        const response = await fetch(`${API_BASE}?action=get_news`);
+        const news = await response.json();
+        const newsList = document.querySelector('.news-list');
+
+        if (news && news.length > 0) {
+            newsList.innerHTML = '';
+            news.forEach(item => {
+                const newsItem = document.createElement('div');
+                newsItem.className = 'news-item';
+                newsItem.innerHTML = `
+                    <div class="news-thumb" style="background-image: url('${item.image}'); background-size: cover;"></div>
+                    <div class="news-info">
+                        <h5>${item.title}</h5>
+                        <p>${item.content}</p>
+                    </div>
+                `;
+                newsList.appendChild(newsItem);
+            });
+        }
+    } catch (e) {
+        console.error("News load error:", e);
+    }
 }
 
 function updateUI(user) {
