@@ -45,6 +45,8 @@ async function init() {
             fadeOutIn('loading', 'dashboard');
         } else if (tab === 'food') {
             fadeOutIn('loading', 'food-app');
+        } else if (tab === 'taxi') {
+            fadeOutIn('loading', 'taxi-app');
         } else {
             fadeOutIn('loading', 'selection-screen');
         }
@@ -147,7 +149,8 @@ function switchTab(tabId) {
         'menu': 'selection-screen',
         'system': 'dashboard',
         'chat': 'ai-chat',
-        'food': 'food-app'
+        'food': 'food-app',
+        'taxi': 'taxi-app'
     };
 
     const targetScreenId = screens[tabId];
@@ -238,4 +241,23 @@ function addMessage(text, sender) {
     msgDiv.innerHTML = `<p>${text}</p>`;
     chatMessages.appendChild(msgDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Taxi logic
+document.querySelectorAll('.car-type').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.car-type').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+    });
+});
+
+function orderTaxi() {
+    const to = document.getElementById('taxi-to').value.trim();
+    if (!to) {
+        tg.showAlert("Iltimos, boradigan manzilingizni kiriting!");
+        return;
+    }
+    const activeType = document.querySelector('.car-type.active h5').textContent;
+    const price = document.querySelector('.car-type.active .car-price').textContent;
+    tg.showAlert(`${activeType} taxi chaqirildi!\nNarx: ${price} so'm\nHaydovchi 3-5 daqiqada yetib keladi.`);
 }

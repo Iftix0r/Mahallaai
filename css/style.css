@@ -642,7 +642,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
 .food-header-top {
@@ -742,7 +742,7 @@ header {
     justify-content: space-between;
     align-items: center;
     color: white;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .offer-content h3 {
@@ -791,7 +791,7 @@ header {
     background-size: cover;
     background-position: center;
     position: relative;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .food-item-horizontal {
@@ -801,7 +801,7 @@ header {
     background: #f8fafc;
     padding: 12px;
     border-radius: 18px;
-    border: 1px solid rgba(0,0,0,0.02);
+    border: 1px solid rgba(0, 0, 0, 0.02);
 }
 
 .food-thumb {
@@ -825,4 +825,214 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Taxi Selection Card */
+.selection-card.taxi {
+    background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+}
+
+.selection-card.taxi .card-icon-large {
+    background: #d1fae5;
+}
+
+/* Taxi App Styles */
+#taxi-app {
+    background: #f1f5f9;
+    padding-bottom: 0;
+}
+
+.taxi-header {
+    padding: 20px;
+    background: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.taxi-main {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 80px);
+}
+
+.taxi-map {
+    flex: 1;
+    background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 100%);
+    position: relative;
+    min-height: 250px;
+}
+
+.map-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.map-pin {
+    font-size: 3rem;
+    animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+.map-overlay p {
+    margin-top: 8px;
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.taxi-panel {
+    background: white;
+    border-radius: 24px 24px 0 0;
+    padding: 24px 20px;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.route-card {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.route-input {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.route-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.route-dot.green {
+    background: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+}
+
+.route-dot.red {
+    background: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+
+.route-input input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px 0;
+    font-size: 0.9rem;
+    outline: none;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+.route-line {
+    width: 2px;
+    height: 20px;
+    background: #e2e8f0;
+    margin-left: 5px;
+}
+
+.car-types {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.car-type {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.car-type.active {
+    border-color: #10b981;
+    background: #ecfdf5;
+}
+
+.car-icon {
+    font-size: 1.8rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border-radius: 12px;
+}
+
+.car-type.active .car-icon {
+    background: #d1fae5;
+}
+
+.car-info {
+    flex: 1;
+}
+
+.car-info h5 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.car-info span {
+    font-size: 0.78rem;
+    color: #64748b;
+}
+
+.car-price {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: #1e293b;
+}
+
+.car-price::after {
+    content: " so'm";
+    font-weight: 500;
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.taxi-order-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+    transition: all 0.3s;
+}
+
+.taxi-order-btn:active {
+    transform: scale(0.98);
 }

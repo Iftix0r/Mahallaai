@@ -20,7 +20,8 @@ if ($chat_id) {
             sendMessage($chat_id, "<b>Xush kelibsiz, " . htmlspecialchars($user['fullname']) . "!</b>\n\nMahalla AI tizimi sizga xizmat ko'rsatishga tayyor. Kerakli bo'limni tanlang:", [
                 'inline_keyboard' => [
                     [['text' => "🏢 Tizimga kirish", 'web_app' => ['url' => WEBAPP_URL . "?tab=system"]]],
-                    [['text' => "🍔 Mahalla tezkor ovqatlar", 'web_app' => ['url' => WEBAPP_URL . "?tab=food"]]]
+                    [['text' => "🍔 Mahalla tezkor ovqatlar", 'web_app' => ['url' => WEBAPP_URL . "?tab=food"]]],
+                    [['text' => "🚕 Mahalla Taxi", 'web_app' => ['url' => WEBAPP_URL . "?tab=taxi"]]]
                 ]
             ]);
         } else {
@@ -60,7 +61,8 @@ if ($chat_id) {
             sendMessage($chat_id, "Quyidagi tugmalar orqali xizmatlardan foydalanishingiz mumkin:", [
                 'inline_keyboard' => [
                     [['text' => "🏢 Tizimga kirish", 'web_app' => ['url' => WEBAPP_URL . "?tab=system"]]],
-                    [['text' => "🍔 Mahalla tezkor ovqatlar", 'web_app' => ['url' => WEBAPP_URL . "?tab=food"]]]
+                    [['text' => "🍔 Mahalla tezkor ovqatlar", 'web_app' => ['url' => WEBAPP_URL . "?tab=food"]]],
+                    [['text' => "🚕 Mahalla Taxi", 'web_app' => ['url' => WEBAPP_URL . "?tab=taxi"]]]
                 ]
             ]);
         }

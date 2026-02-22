@@ -49,6 +49,14 @@
                         <p>Eng mazali taomlar va tezkor yetkazib berish</p>
                     </div>
                 </div>
+                <div class="selection-card taxi" onclick="switchTab('taxi')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon-large">🚕</div>
+                    <div class="card-text">
+                        <h3>Mahalla Taxi</h3>
+                        <p>Tezkor va arzon taksi xizmati</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -194,7 +202,8 @@
                             <button class="btn-offer">Olish</button>
                         </div>
                         <div class="offer-img">
-                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" alt="Burger">
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80"
+                                alt="Burger">
                         </div>
                     </div>
                 </section>
@@ -207,7 +216,8 @@
                     <div class="food-grid" id="restaurants-list">
                         <!-- Restaurants will be loaded here -->
                         <div class="rest-card">
-                            <div class="rest-img" style="background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80')">
+                            <div class="rest-img"
+                                style="background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80')">
                                 <span class="rating">⭐ 4.8</span>
                             </div>
                             <div class="rest-info">
@@ -216,7 +226,8 @@
                             </div>
                         </div>
                         <div class="rest-card">
-                            <div class="rest-img" style="background-image: url('https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&w=400&q=80')">
+                            <div class="rest-img"
+                                style="background-image: url('https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&w=400&q=80')">
                                 <span class="rating">⭐ 4.5</span>
                             </div>
                             <div class="rest-info">
@@ -233,7 +244,9 @@
                     </div>
                     <div class="popular-list">
                         <div class="food-item-horizontal">
-                            <div class="food-thumb" style="background-image: url('https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=200&q=80')"></div>
+                            <div class="food-thumb"
+                                style="background-image: url('https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=200&q=80')">
+                            </div>
                             <div class="food-details">
                                 <h5>Double Cheeseburger</h5>
                                 <p>Sershira go'sht va pishloq</p>
@@ -245,6 +258,75 @@
                         </div>
                     </div>
                 </section>
+            </main>
+        </div>
+
+        <!-- Taxi App Screen -->
+        <div id="taxi-app" class="screen hidden">
+            <header class="taxi-header">
+                <div class="food-header-top">
+                    <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
+                    <h3 style="font-weight: 700; font-size: 1.1rem;">Mahalla Taxi</h3>
+                    <div style="width: 40px;"></div>
+                </div>
+            </header>
+
+            <main class="taxi-main">
+                <!-- Map Placeholder -->
+                <div class="taxi-map">
+                    <div class="map-overlay">
+                        <div class="map-pin">📍</div>
+                        <p>Joylashuvingiz aniqlanmoqda...</p>
+                    </div>
+                </div>
+
+                <!-- Route Input -->
+                <div class="taxi-panel">
+                    <div class="route-card">
+                        <div class="route-input">
+                            <div class="route-dot green"></div>
+                            <input type="text" id="taxi-from" placeholder="Qayerdan?" value="Hozirgi joylashuv">
+                        </div>
+                        <div class="route-line"></div>
+                        <div class="route-input">
+                            <div class="route-dot red"></div>
+                            <input type="text" id="taxi-to" placeholder="Qayerga?">
+                        </div>
+                    </div>
+
+                    <!-- Car Types -->
+                    <div class="car-types">
+                        <div class="car-type active">
+                            <div class="car-icon">🚗</div>
+                            <div class="car-info">
+                                <h5>Standart</h5>
+                                <span>5 min</span>
+                            </div>
+                            <div class="car-price">8 000</div>
+                        </div>
+                        <div class="car-type">
+                            <div class="car-icon">🚙</div>
+                            <div class="car-info">
+                                <h5>Comfort</h5>
+                                <span>8 min</span>
+                            </div>
+                            <div class="car-price">15 000</div>
+                        </div>
+                        <div class="car-type">
+                            <div class="car-icon">🚐</div>
+                            <div class="car-info">
+                                <h5>Minivan</h5>
+                                <span>12 min</span>
+                            </div>
+                            <div class="car-price">20 000</div>
+                        </div>
+                    </div>
+
+                    <!-- Order Button -->
+                    <button class="taxi-order-btn" onclick="orderTaxi()">
+                        Taksi chaqirish
+                    </button>
+                </div>
             </main>
         </div>
 
