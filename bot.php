@@ -24,7 +24,8 @@ if ($chat_id) {
                     [['text' => "🚕 Mahalla Taxi", 'web_app' => ['url' => WEBAPP_URL . "?tab=taxi"]]],
                     [['text' => "🛒 Mahalla Market", 'web_app' => ['url' => WEBAPP_URL . "?tab=market"]]],
                     [['text' => "💼 Mahalla Ishlar", 'web_app' => ['url' => WEBAPP_URL . "?tab=ish"]]],
-                    [['text' => "🎓 AB Education", 'web_app' => ['url' => WEBAPP_URL . "?tab=abedu"]]]
+                    [['text' => "🎓 AB Education", 'web_app' => ['url' => WEBAPP_URL . "?tab=abedu"]]],
+                    [['text' => "🏦 Mahalla Bank", 'web_app' => ['url' => WEBAPP_URL . "?tab=bank"]]]
                 ]
             ]);
         } else {
@@ -68,7 +69,8 @@ if ($chat_id) {
                     [['text' => "🚕 Mahalla Taxi", 'web_app' => ['url' => WEBAPP_URL . "?tab=taxi"]]],
                     [['text' => "🛒 Mahalla Market", 'web_app' => ['url' => WEBAPP_URL . "?tab=market"]]],
                     [['text' => "💼 Mahalla Ish", 'web_app' => ['url' => WEBAPP_URL . "?tab=ish"]]],
-                    [['text' => "🎓 AB Education", 'web_app' => ['url' => WEBAPP_URL . "?tab=abedu"]]]
+                    [['text' => "🎓 AB Education", 'web_app' => ['url' => WEBAPP_URL . "?tab=abedu"]]],
+                    [['text' => "🏦 Mahalla Bank", 'web_app' => ['url' => WEBAPP_URL . "?tab=bank"]]]
                 ]
             ]);
         }

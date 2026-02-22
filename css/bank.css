@@ -1,39 +1,32 @@
 /* ========================================
-   MAHALLA BANK APP - CSS
+   MAHALLA BANK APP
    ======================================== */
-
-#bank-app {
-    background: #f8fafc;
-    padding-bottom: 80px;
-    min-height: 100vh;
-}
 
 .bank-header {
     padding: 20px;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    background: #ffffff;
     position: sticky;
     top: 0;
     z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.add-card-btn {
+    background: var(--primary);
     color: white;
-    border-bottom-left-radius: 24px;
-    border-bottom-right-radius: 24px;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.bank-header h3 {
-    font-weight: 700;
-    font-size: 1.1rem;
+.add-card-btn:active {
+    transform: scale(0.95);
 }
 
-.bank-header .back-to-menu-dark {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
-
-/* Selection Card */
 .selection-card.bank {
     background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
 }
@@ -42,178 +35,153 @@
     background: #dcfce7;
 }
 
-/* Balance Card */
-.bank-balance-wrapper {
-    padding: 20px;
-    margin-top: -20px;
+.bank-main {
+    padding-top: 20px;
 }
 
-.bank-balance-card {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    border-radius: 24px;
-    padding: 24px;
+.bank-section-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 16px;
+    padding: 0 20px;
+}
+
+.cards-carousel {
+    display: flex;
+    gap: 15px;
+    padding: 0 20px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.cards-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.bank-card-item {
+    min-width: 280px;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     color: white;
-    box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(30, 41, 59, 0.2);
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
-.bank-balance-card::before {
-    content: '';
+.bank-card-item.style-2 {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+}
+
+.bank-card-item.style-3 {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+}
+
+.card-decor {
     position: absolute;
-    top: -50px;
-    right: -50px;
     width: 150px;
     height: 150px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
+    top: -50px;
+    right: -50px;
 }
 
-.bank-balance-card::after {
-    content: '';
-    position: absolute;
-    bottom: -30px;
-    left: -30px;
-    width: 100px;
-    height: 100px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-}
-
-.balance-title {
-    font-size: 0.85rem;
-    opacity: 0.9;
-    margin-bottom: 5px;
-    font-weight: 500;
-}
-
-.balance-amount {
-    font-size: 2rem;
+.card-balance {
+    font-size: 1.5rem;
     font-weight: 800;
-    letter-spacing: -0.5px;
-    margin-bottom: 25px;
+    margin-bottom: 24px;
+    z-index: 1;
+    position: relative;
 }
 
-.balance-amount span {
-    font-size: 1.2rem;
-    font-weight: 600;
-    opacity: 0.9;
+.card-balance span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.8;
 }
 
-.bank-card-details {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
-.card-number {
+.card-num {
     font-family: monospace;
     font-size: 1.1rem;
     letter-spacing: 2px;
+    margin-bottom: 8px;
+    z-index: 1;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.card-brand {
-    font-weight: 800;
-    font-style: italic;
-    font-size: 1.2rem;
-}
-
-/* Action Buttons */
-.bank-actions {
+.card-bottom {
     display: flex;
-    justify-content: space-around;
-    padding: 10px 20px;
-    gap: 10px;
-}
-
-.b-action-btn {
-    flex: 1;
-    background: white;
-    border: none;
-    border-radius: 20px;
-    padding: 15px 10px;
-    display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-    cursor: pointer;
-    transition: all 0.2s;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 1;
+    position: relative;
+    opacity: 0.8;
 }
 
-.b-action-btn:active {
+.bank-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 0 20px;
+}
+
+.action-btn {
+    background: white;
+    border-radius: 16px;
+    padding: 15px 10px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.action-btn:active {
     transform: scale(0.95);
 }
 
-.b-action-icon {
-    width: 45px;
-    height: 45px;
-    background: #f1f5f9;
-    border-radius: 14px;
+.action-icon {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 10px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
 }
 
-.b-action-btn:nth-child(1) .b-action-icon {
-    background: #eff6ff;
-    color: #3b82f6;
-}
-
-/* O'tkazma */
-.b-action-btn:nth-child(2) .b-action-icon {
-    background: #fef2f2;
-    color: #ef4444;
-}
-
-/* To'lov */
-.b-action-btn:nth-child(3) .b-action-icon {
-    background: #f5f3ff;
-    color: #8b5cf6;
-}
-
-/* Tarix */
-.b-action-btn:nth-child(4) .b-action-icon {
-    background: #ecfdf5;
-    color: #10b981;
-}
-
-/* Karta */
-.b-action-text {
+.action-btn span {
     font-size: 0.75rem;
     font-weight: 600;
     color: #475569;
-    text-align: center;
 }
 
-/* Sections */
-.bank-section {
-    padding: 20px;
-}
-
-.bank-section-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 15px;
-}
-
-/* Transactions list */
-.transaction-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.transactions-list {
+    background: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
 }
 
 .transaction-item {
-    background: white;
-    border-radius: 16px;
-    padding: 16px;
     display: flex;
     align-items: center;
     gap: 15px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    padding: 16px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
 }
 
 .t-icon {
@@ -223,15 +191,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
-.t-icon.out {
-    background: #fef2f2;
+.t-icon.bg-red {
+    background: #fee2e2;
     color: #ef4444;
 }
 
-.t-icon.in {
+.t-icon.bg-green {
     background: #ecfdf5;
     color: #10b981;
 }
@@ -240,60 +208,52 @@
     flex: 1;
 }
 
-.t-title {
-    font-weight: 600;
-    font-size: 0.9rem;
+.t-info h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
     color: #1e293b;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
 }
 
-.t-date {
+.t-info p {
     font-size: 0.75rem;
     color: #94a3b8;
 }
 
 .t-amount {
-    font-weight: 700;
+    font-weight: 800;
     font-size: 0.95rem;
 }
 
-.t-amount.out {
+.t-amount.negative {
     color: #1e293b;
 }
 
-.t-amount.in {
+.t-amount.positive {
     color: #10b981;
 }
 
-/* Modals */
-.bank-modal {
-    border-radius: 28px 28px 0 0;
-    padding: 25px 20px 40px;
-    background: white;
-}
-
-.bank-modal .form-group label {
-    font-size: 0.85rem;
-    font-weight: 600;
+.add-card-empty {
+    min-width: 280px;
+    background: transparent;
+    border: 2px dashed #cbd5e1;
     color: #64748b;
-    margin-bottom: 8px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 30px;
 }
 
-.bank-input {
-    width: 100%;
-    border: none;
+.add-card-empty:active {
     background: #f8fafc;
-    border-radius: 16px;
-    padding: 16px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #1e293b;
-    outline: none;
-    margin-bottom: 20px;
-    text-align: center;
-    letter-spacing: 1px;
 }
 
-.bank-input:focus {
-    box-shadow: 0 0 0 2px var(--primary);
+.add-card-empty i {
+    font-size: 2rem;
+    color: #94a3b8;
 }
