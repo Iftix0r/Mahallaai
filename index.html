@@ -26,14 +26,41 @@
             </div>
         </div>
 
-        <!-- Dashboard -->
+        <!-- Selection Screen (Main Menu) -->
+        <div id="selection-screen" class="screen hidden">
+            <div class="selection-header">
+                <h1>Mahalla AI</h1>
+                <p>O'zingizga kerakli bo'limni tanlang</p>
+            </div>
+            <div class="selection-grid">
+                <div class="selection-card" onclick="switchTab('system')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon-large">🏢</div>
+                    <div class="card-text">
+                        <h3>Tizimga kirish</h3>
+                        <p>Mahalla boshqaruvi va davlat xizmatlari</p>
+                    </div>
+                </div>
+                <div class="selection-card accent" onclick="switchTab('food')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon-large">🍔</div>
+                    <div class="card-text">
+                        <h3>Mahalla Fast Food</h3>
+                        <p>Eng mazali taomlar va tezkor yetkazib berish</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard (System) -->
         <div id="dashboard" class="screen hidden">
             <header>
                 <div class="user-profile">
+                    <button class="back-to-menu" onclick="switchTab('menu')">←</button>
                     <div class="avatar" id="user-avatar">M</div>
                     <div class="user-info">
                         <h3 id="user-name">Foydalanuvchi</h3>
-                        <p id="user-region">Toshkent shahar, Yakkasaray t.</p>
+                        <p id="user-region">Toshkent shahar...</p>
                     </div>
                 </div>
                 <button class="notification-btn" style="border: none; background: none; font-size: 1.2rem;">
@@ -114,7 +141,7 @@
             </main>
 
             <nav class="bottom-nav">
-                <div class="nav-item active" onclick="switchTab('home')">
+                <div class="nav-item active" onclick="switchTab('system')">
                     <div class="icon">🏠</div>
                     <span>Asosiy</span>
                 </div>
@@ -133,11 +160,99 @@
             </nav>
         </div>
 
+        <!-- Food App Screen -->
+        <div id="food-app" class="screen hidden">
+            <header class="food-header">
+                <div class="food-header-top">
+                    <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
+                    <div class="food-location">
+                        <span class="loc-icon">📍</span>
+                        <span id="food-user-location">Hozirgi joylashuvingiz</span>
+                    </div>
+                    <button class="cart-btn">🛒<span class="cart-count">0</span></button>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Ovqat yoki restoran qidirish...">
+                    <button class="filter-btn">🔍</button>
+                </div>
+            </header>
+
+            <main class="food-main">
+                <section class="food-categories">
+                    <div class="cat-item active">🍔 Barchasi</div>
+                    <div class="cat-item">🍟 Fast Food</div>
+                    <div class="cat-item">🥤 Ichimliklar</div>
+                    <div class="cat-item">🍰 Shirinliklar</div>
+                    <div class="cat-item">🍕 Pitsa</div>
+                </section>
+
+                <section class="food-offers">
+                    <div class="offer-card">
+                        <div class="offer-content">
+                            <h3>20% CHEGIRMA</h3>
+                            <p>Ilk buyurtmangiz uchun maxsus taklif</p>
+                            <button class="btn-offer">Olish</button>
+                        </div>
+                        <div class="offer-img">
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" alt="Burger">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="food-nearby">
+                    <div class="section-title">
+                        <h3>Yaqin atrofdagi joylar</h3>
+                        <a href="#">Barchasi</a>
+                    </div>
+                    <div class="food-grid" id="restaurants-list">
+                        <!-- Restaurants will be loaded here -->
+                        <div class="rest-card">
+                            <div class="rest-img" style="background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80')">
+                                <span class="rating">⭐ 4.8</span>
+                            </div>
+                            <div class="rest-info">
+                                <h4>Gozzo Pitsa</h4>
+                                <p>Pitsa • Fast Food • 15-20 min</p>
+                            </div>
+                        </div>
+                        <div class="rest-card">
+                            <div class="rest-img" style="background-image: url('https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&w=400&q=80')">
+                                <span class="rating">⭐ 4.5</span>
+                            </div>
+                            <div class="rest-info">
+                                <h4>Max Way</h4>
+                                <p>Burger • Lavash • 10-15 min</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="food-popular">
+                    <div class="section-title">
+                        <h3>Ommabop taomlar</h3>
+                    </div>
+                    <div class="popular-list">
+                        <div class="food-item-horizontal">
+                            <div class="food-thumb" style="background-image: url('https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=200&q=80')"></div>
+                            <div class="food-details">
+                                <h5>Double Cheeseburger</h5>
+                                <p>Sershira go'sht va pishloq</p>
+                                <div class="price-row">
+                                    <span class="price">35 000 so'm</span>
+                                    <button class="add-to-cart">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
         <!-- AI Assistant Tab -->
         <div id="ai-chat" class="screen hidden">
             <header>
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <button onclick="switchTab('home')"
+                    <button onclick="switchTab('system')"
                         style="border: none; background: none; font-size: 1.5rem; cursor: pointer;">←</button>
                     <h3 style="font-weight: 700;">Mahalla AI Yordamchi</h3>
                 </div>

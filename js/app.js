@@ -36,9 +36,9 @@ async function init() {
         }
     }
 
-    // Fade out loading screen
+    // Fade out loading screen to selection screen
     setTimeout(() => {
-        fadeOutIn('loading', 'dashboard');
+        fadeOutIn('loading', 'selection-screen');
     }, 1500);
 }
 
@@ -48,6 +48,7 @@ function updateUI(user) {
     userAvatar.textContent = (user.fullname || "M").charAt(0);
     if (user.region || user.mahalla) {
         userRegion.textContent = `${user.region || ''}, ${user.mahalla || ''} mah.`;
+        document.getElementById('food-user-location').textContent = `${user.mahalla || ''} mahalla`;
     } else {
         userRegion.textContent = "Hudud belgilanmagan";
     }
@@ -93,6 +94,7 @@ document.getElementById('save-profile').addEventListener('click', async () => {
 
             // Refresh UI
             userRegion.textContent = `${region}, ${mahalla} mah.`;
+            document.getElementById('food-user-location').textContent = `${mahalla} mahalla`;
         } else {
             tg.showAlert("Xatolik yuz berdi: " + result.message);
         }
@@ -105,8 +107,10 @@ init();
 
 function switchTab(tabId) {
     const screens = {
-        'home': 'dashboard',
-        'chat': 'ai-chat'
+        'menu': 'selection-screen',
+        'system': 'dashboard',
+        'chat': 'ai-chat',
+        'food': 'food-app'
     };
 
     const targetScreenId = screens[tabId];
@@ -118,10 +122,12 @@ function switchTab(tabId) {
 
     fadeOutIn(currentScreen ? currentScreen.id : null, targetScreenId);
 
-    // Update Nav
-    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-    if (tabId === 'home') document.querySelector('.nav-item:nth-child(1)').classList.add('active');
-    if (tabId === 'chat') document.querySelector('.nav-item:nth-child(3)').classList.add('active');
+    // Update Nav (only for dashboard tabs)
+    if (tabId === 'system' || tabId === 'chat') {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        if (tabId === 'system') document.querySelector('.nav-item:nth-child(1)').classList.add('active');
+        if (tabId === 'chat') document.querySelector('.nav-item:nth-child(3)').classList.add('active');
+    }
 }
 
 function fadeOutIn(fromId, toId) {
