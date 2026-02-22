@@ -43,6 +43,41 @@ if ($method == 'POST') {
         }
     }
 
+    if ($action == 'web_register') {
+        $stmt = $db->prepare("INSERT INTO users (phone, password, fullname) VALUES (?, ?, ?)");
+        try {
+            // we should set a dummy telegram_id or NULL. Since we modified config, telegram_id is NULLable but UNIQUE. We can leave it NULL.
+            $hash = password_hash($data['password'], PASSWORD_DEFAULT);
+            $stmt->execute([
+                $data['phone'],
+                $hash,
+                "Foydalanuvchi"
+            ]);
+            
+            $user_id = $db->lastInsertId();
+            $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
+            $stmt->execute([$user_id]);
+            $user = $stmt->fetch();
+            echo json_encode(['status' => 'success', 'user' => $user]);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => 'Bu raqam allaqachon ro\'yxatdan o\'tgan!']);
+        }
+    }
+
+    if ($action == 'web_login') {
+        $phone = $data['phone'] ?? '';
+        $password = $data['password'] ?? '';
+        $stmt = $db->prepare("SELECT * FROM users WHERE phone = ?");
+        $stmt->execute([$phone]);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($password, $user['password'])) {
+            echo json_encode(['status' => 'success', 'user' => $user]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Telefon raqam yoki parol noto\'g\'ri!']);
+        }
+    }
+
     if ($action == 'update_profile') {
         if (!$data || !isset($data['telegram_id'])) {
             echo json_encode(['status' => 'error', 'message' => 'Missing data or Telegram ID']);

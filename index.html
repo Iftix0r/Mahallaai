@@ -1154,14 +1154,49 @@
             }
         }
 
-        function loginMock() {
-            isLoggedIn = true;
-            closeAuthModal();
-            updateAuthState();
+        async function loginMock() {
+            const input = document.getElementById('auth-input').value;
+            const password = document.getElementById('auth-password').value;
 
-            // Optional: update dashboard profile UI
-            const nameEl = document.getElementById('user-name');
-            if (nameEl) nameEl.innerText = 'Ixtiyor';
+            if (!input || !password) {
+                alert("Iltimos, barcha qatorlarni to'ldiring!");
+                return;
+            }
+
+            const action = authMode === 'login' ? 'web_login' : 'web_register';
+            try {
+                const response = await fetch(`api/index.php?action=${action}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: input,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    isLoggedIn = true;
+                    closeAuthModal();
+
+                    if (typeof updateUI === 'function') {
+                        updateUI(result.user);
+                    }
+
+                    updateAuthState();
+                    const nameEl = document.getElementById('user-name');
+                    if (nameEl) nameEl.innerText = result.user.fullname || 'Foydalanuvchi';
+
+                    if (authMode === 'register') {
+                        alert("Muvaffaqiyatli ro'yxatdan o'tdingiz!");
+                    }
+                } else {
+                    alert('Xatolik: ' + result.message);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Server bilan aloqa uzildi.");
+            }
         }
 
         // Initialize auth state

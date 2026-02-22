@@ -19,13 +19,32 @@ try {
     // Create tables (MySQL syntax)
     $db->exec("CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        telegram_id BIGINT UNIQUE,
+        telegram_id BIGINT UNIQUE NULL,
         fullname VARCHAR(255),
-        phone VARCHAR(20),
+        phone VARCHAR(20) UNIQUE,
+        password VARCHAR(255),
         region VARCHAR(100),
         mahalla VARCHAR(100),
         registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    try {
+        $db->exec("ALTER TABLE users ADD COLUMN password VARCHAR(255) AFTER phone");
+    } catch (PDOException $e) {
+        // Ignore if column already exists
+    }
+    
+    try {
+        $db->exec("ALTER TABLE users ADD UNIQUE(phone)");
+    } catch (PDOException $e) {
+        // Ignore if constraint already exists
+    }
+    
+    try {
+        $db->exec("ALTER TABLE users MODIFY COLUMN telegram_id BIGINT NULL");
+    } catch(PDOException $e) {
+        // Ignore if logic fails
+    }
 
     $db->exec("CREATE TABLE IF NOT EXISTS admins (
         id INT AUTO_INCREMENT PRIMARY KEY,
