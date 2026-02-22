@@ -37,6 +37,16 @@
 
         <!-- Selection Screen (Main Menu) -->
         <div id="selection-screen" class="screen hidden">
+            <!-- Google-like header -->
+            <div style="position: absolute; top: 16px; right: 20px; display: flex; align-items: center; gap: 16px; z-index: 100;">
+                <button style="background: none; border: none; cursor: pointer; color: #5f6368; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; outline: none;" onmouseover="this.style.backgroundColor='rgba(0,0,0,0.05)'" onmouseout="this.style.backgroundColor='transparent'">
+                    <svg focusable="false" viewBox="0 0 24 24" width="24" height="24"><path d="M6,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM6,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM6,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM12,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM16,6c0,1.1 0.9,2 2,2s2,-0.9 2,-2 -0.9,-2 -2,-2 -2,0.9 -2,2zM12,8c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM18,14c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2zM18,20c1.1,0 2,-0.9 2,-2s-0.9,-2 -2,-2 -2,0.9 -2,2 0.9,2 2,2z" fill="currentColor"></path></svg>
+                </button>
+                <div onclick="openService('profile'); if(typeof switchTab === 'function'){switchTab('system')}" style="width: 32px; height: 32px; border-radius: 50%; background-color: #e91e63; color: white; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 16px; cursor: pointer; user-select: none;">
+                    I
+                </div>
+            </div>
+
             <div class="selection-header">
                 <h1>Mahalla AI</h1>
                 <p>O'zingizga kerakli bo'limni tanlang</p>
