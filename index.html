@@ -37,7 +37,14 @@
                 <h1>Mahalla AI</h1>
                 <p>O'zingizga kerakli bo'limni tanlang</p>
             </div>
-            <div class="selection-grid">
+
+            <div class="search-bar"
+                style="width: 100%; margin-bottom: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-radius: 16px;">
+                <input type="text" id="global-search" placeholder="Xizmatlarni qidirish (taksi, ovqat, mahalla...)">
+                <button class="filter-btn">🔍</button>
+            </div>
+
+            <div class="selection-grid" id="main-services-grid">
                 <div class="selection-card" onclick="switchTab('system')">
                     <div class="card-glow"></div>
                     <div class="card-icon-large">🏢</div>
