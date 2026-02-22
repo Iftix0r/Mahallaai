@@ -2,38 +2,48 @@
 
 <script>document.getElementById('page-title').innerText = 'Foydalanuvchilar';</script>
 
-<div class="table-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="font-size: 1.2rem;">Barcha foydalanuvchilar</h2>
-        <input type="text" id="userSearch" placeholder="Qidirish..." style="padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0; width: 250px;">
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-users" style="margin-right: 8px; color: var(--text-muted);"></i>Barcha foydalanuvchilar</h3>
+        <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" id="userSearch" placeholder="Qidirish...">
+        </div>
     </div>
-    <table id="usersTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>To'liq ism</th>
-                <th>Telegram ID</th>
-                <th>Telefon</th>
-                <th>Hudud / Mahalla</th>
-                <th>Ro'yxatdan o'tdi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $stmt = $db->query("SELECT * FROM users ORDER BY registered_at DESC");
-            while ($user = $stmt->fetch()) {
-                echo "<tr>";
-                echo "<td>#{$user['id']}</td>";
-                echo "<td>" . htmlspecialchars($user['fullname']) . "</td>";
-                echo "<td>{$user['telegram_id']}</td>";
-                echo "<td>" . ($user['phone'] ?: '---') . "</td>";
-                echo "<td>" . ($user['region'] ? "{$user['region']}, {$user['mahalla']} mah." : '---') . "</td>";
-                echo "<td>" . date('d.m.Y H:i', strtotime($user['registered_at'])) . "</td>";
-                echo "</tr>";
-            }
-            ?>
-        </tbody>
-    </table>
+    <div class="card-body">
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Foydalanuvchi</th>
+                    <th>Telegram ID</th>
+                    <th>Telefon</th>
+                    <th>Hudud / Mahalla</th>
+                    <th>Holat</th>
+                    <th>Ro'yxatdan o'tdi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $stmt = $db->query("SELECT * FROM users ORDER BY registered_at DESC");
+                while ($user = $stmt->fetch()) {
+                    $initial = strtoupper(substr($user['fullname'] ?: 'U', 0, 1));
+                    $hasPhone = !empty($user['phone']);
+                    $location = $user['region'] ? "{$user['region']}, {$user['mahalla']} mah." : '—';
+                    echo "<tr>";
+                    echo "<td style='color: var(--text-muted); font-weight: 500;'>#{$user['id']}</td>";
+                    echo "<td><div class='user-cell'><div class='user-avatar-sm'>{$initial}</div><span style='font-weight: 600;'>" . htmlspecialchars($user['fullname'] ?: 'Noma\'lum') . "</span></div></td>";
+                    echo "<td style='font-family: monospace; color: var(--text-light);'>{$user['telegram_id']}</td>";
+                    echo "<td>" . ($user['phone'] ?: '<span style="color: var(--text-muted);">—</span>') . "</td>";
+                    echo "<td>" . ($location != '—' ? $location : '<span style="color: var(--text-muted);">—</span>') . "</td>";
+                    echo "<td>" . ($hasPhone ? '<span class="badge badge-success">Tasdiqlangan</span>' : '<span class="badge badge-warning">Kutilmoqda</span>') . "</td>";
+                    echo "<td style='color: var(--text-light);'>" . date('d.m.Y H:i', strtotime($user['registered_at'])) . "</td>";
+                    echo "</tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>

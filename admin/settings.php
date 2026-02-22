@@ -6,33 +6,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $new_pass = $_POST['new_password'];
     $confirm_pass = $_POST['confirm_password'];
     
-    if ($new_pass === $confirm_pass) {
+    if (strlen($new_pass) < 6) {
+        $msg = 'short';
+    } elseif ($new_pass === $confirm_pass) {
         $hash = password_hash($new_pass, PASSWORD_DEFAULT);
         $stmt = $db->prepare("UPDATE admins SET password = ? WHERE username = ?");
         $stmt->execute([$hash, $_SESSION['admin_user']]);
-        $msg = "<div style='color: #10b981; margin-bottom: 20px;'>Parol muvaffaqiyatli yangilandi!</div>";
+        $msg = 'success';
     } else {
-        $msg = "<div style='color: #ef4444; margin-bottom: 20px;'>Parollar mos kelmadi!</div>";
+        $msg = 'mismatch';
     }
 }
 ?>
 
 <script>document.getElementById('page-title').innerText = 'Sozlamalar';</script>
 
-<div class="table-container" style="max-width: 500px;">
-    <h2 style="margin-bottom: 20px; font-size: 1.1rem;">Admin parolini o'zgartirish</h2>
-    <?php echo $msg; ?>
-    <form method="POST">
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Yangi parol</label>
-            <input type="password" name="new_password" required style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0;">
+<?php if ($msg == 'success'): ?>
+    <div class="alert alert-success"><i class="fas fa-check-circle"></i> Parol muvaffaqiyatli yangilandi!</div>
+<?php elseif ($msg == 'mismatch'): ?>
+    <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Parollar mos kelmadi!</div>
+<?php elseif ($msg == 'short'): ?>
+    <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Parol kamida 6 ta belgidan iborat bo'lishi kerak!</div>
+<?php endif; ?>
+
+<div style="max-width: 480px;">
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-lock" style="margin-right: 8px; color: var(--text-muted);"></i>Parolni o'zgartirish</h3>
         </div>
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Parolni tasdiqlang</label>
-            <input type="password" name="confirm_password" required style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0;">
+        <div class="card-body padded">
+            <form method="POST">
+                <div class="form-group">
+                    <label><i class="fas fa-key" style="margin-right: 6px;"></i>Yangi parol</label>
+                    <input type="password" name="new_password" required class="form-control" placeholder="Kamida 6 ta belgi" minlength="6">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-redo" style="margin-right: 6px;"></i>Parolni tasdiqlang</label>
+                    <input type="password" name="confirm_password" required class="form-control" placeholder="Parolni qayta kiriting">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                    <i class="fas fa-save"></i> Yangilash
+                </button>
+            </form>
         </div>
-        <button type="submit" style="width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer;">Yangilash</button>
-    </form>
+    </div>
 </div>
 
 <?php require_once 'footer.php'; ?>

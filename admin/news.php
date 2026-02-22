@@ -1,74 +1,97 @@
 <?php 
 require_once 'header.php'; 
 
+$msg = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_news'])) {
     $title = $_POST['title'];
     $content = $_POST['content'];
-    $image = $_POST['image'] ?? 'https://images.unsplash.com/photo-1541872703-74c5e443d1fe?auto=format&fit=crop&w=800&q=80';
+    $image = $_POST['image'] ?: 'https://images.unsplash.com/photo-1541872703-74c5e443d1fe?auto=format&fit=crop&w=800&q=80';
     
     $stmt = $db->prepare("INSERT INTO news (title, content, image) VALUES (?, ?, ?)");
     $stmt->execute([$title, $content, $image]);
-    echo "<script>alert('Yangilik qo\'shildi!');</script>";
+    $msg = 'success';
 }
 
 if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
+    $id = intval($_GET['delete']);
     $stmt = $db->prepare("DELETE FROM news WHERE id = ?");
     $stmt->execute([$id]);
-    header('Location: news.php');
+    header('Location: news.php?deleted=1');
+    exit;
 }
 ?>
 
-<script>document.getElementById('page-title').innerText = 'Yangiliklar Boshqaruvi';</script>
+<script>document.getElementById('page-title').innerText = 'Yangiliklar';</script>
 
-<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+<?php if ($msg == 'success'): ?>
+    <div class="alert alert-success"><i class="fas fa-check-circle"></i> Yangilik muvaffaqiyatli qo'shildi!</div>
+<?php endif; ?>
+<?php if (isset($_GET['deleted'])): ?>
+    <div class="alert alert-danger"><i class="fas fa-trash"></i> Yangilik o'chirildi.</div>
+<?php endif; ?>
+
+<div class="grid-2">
     <!-- Add News Form -->
-    <div class="table-container" style="height: fit-content;">
-        <h2 style="margin-bottom: 20px; font-size: 1.1rem;">Yangi qo'shish</h2>
-        <form method="POST">
-            <input type="hidden" name="add_news" value="1">
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Sarlavha</label>
-                <input type="text" name="title" required style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Rasm URL</label>
-                <input type="text" name="image" placeholder="https://..." style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Matn</label>
-                <textarea name="content" required style="width: 100%; height: 120px; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0; resize: none;"></textarea>
-            </div>
-            <button type="submit" style="width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer;">Saqlash</button>
-        </form>
+    <div class="card" style="height: fit-content;">
+        <div class="card-header">
+            <h3><i class="fas fa-plus-circle" style="margin-right: 8px; color: var(--primary);"></i>Yangi qo'shish</h3>
+        </div>
+        <div class="card-body padded">
+            <form method="POST">
+                <input type="hidden" name="add_news" value="1">
+                <div class="form-group">
+                    <label><i class="fas fa-heading" style="margin-right: 6px;"></i>Sarlavha</label>
+                    <input type="text" name="title" required class="form-control" placeholder="Yangilik sarlavhasi...">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-image" style="margin-right: 6px;"></i>Rasm URL</label>
+                    <input type="text" name="image" class="form-control" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-align-left" style="margin-right: 6px;"></i>Matn</label>
+                    <textarea name="content" required class="form-control" placeholder="Yangilik matni..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                    <i class="fas fa-save"></i> Saqlash
+                </button>
+            </form>
+        </div>
     </div>
 
     <!-- News List -->
-    <div class="table-container">
-        <h2 style="margin-bottom: 20px; font-size: 1.1rem;">Mavjud yangiliklar</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Rasm</th>
-                    <th>Sarlavha</th>
-                    <th>Sana</th>
-                    <th>Amallar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $stmt = $db->query("SELECT * FROM news ORDER BY created_at DESC");
-                while ($news = $stmt->fetch()) {
-                    echo "<tr>";
-                    echo "<td><img src='{$news['image']}' style='width: 50px; height: 50px; border-radius: 10px; object-fit: cover;'></td>";
-                    echo "<td>" . htmlspecialchars($news['title']) . "</td>";
-                    echo "<td>" . date('d.m.Y', strtotime($news['created_at'])) . "</td>";
-                    echo "<td><a href='?delete={$news['id']}' style='color: #ef4444; text-decoration: none;' onclick='return confirm(\"Ochirishga aminmisiz?\")'>O'chirish</a></td>";
-                    echo "</tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-newspaper" style="margin-right: 8px; color: var(--text-muted);"></i>Mavjud yangiliklar</h3>
+        </div>
+        <div class="card-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rasm</th>
+                        <th>Sarlavha</th>
+                        <th>Sana</th>
+                        <th>Amal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $stmt = $db->query("SELECT * FROM news ORDER BY created_at DESC");
+                    while ($news = $stmt->fetch()) {
+                        echo "<tr>";
+                        echo "<td><img src='{$news['image']}' style='width: 50px; height: 50px; border-radius: 10px; object-fit: cover;'></td>";
+                        echo "<td style='font-weight: 600;'>" . htmlspecialchars($news['title']) . "</td>";
+                        echo "<td style='color: var(--text-light);'>" . date('d.m.Y', strtotime($news['created_at'])) . "</td>";
+                        echo "<td><a href='?delete={$news['id']}' class='btn btn-danger' style='font-size: 0.75rem;' onclick='return confirm(\"Ochirishga aminmisiz?\")'><i class='fas fa-trash-alt'></i></a></td>";
+                        echo "</tr>";
+                    }
+
+                    if ($db->query("SELECT COUNT(*) FROM news")->fetchColumn() == 0) {
+                        echo "<tr><td colspan='4' style='text-align: center; padding: 40px; color: var(--text-muted);'><i class='fas fa-inbox' style='font-size: 2rem; display: block; margin-bottom: 10px;'></i>Yangiliklar yo'q</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
