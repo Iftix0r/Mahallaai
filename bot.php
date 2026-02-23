@@ -218,6 +218,45 @@ if ($chat_id) {
         $stmt->execute([$chat_id]);
         $user = $stmt->fetch();
 
+        // Check if admin is in broadcast mode
+        if ($admin && $admin['broadcast_mode'] == 1) {
+            // Save message/media
+            $messageText = $text;
+            $mediaType = 'text';
+            $mediaFileId = null;
+            
+            if (isset($message['photo'])) {
+                $mediaType = 'photo';
+                $photos = $message['photo'];
+                $mediaFileId = end($photos)['file_id'];
+                $messageText = $message['caption'] ?? '';
+            } elseif (isset($message['video'])) {
+                $mediaType = 'video';
+                $mediaFileId = $message['video']['file_id'];
+                $messageText = $message['caption'] ?? '';
+            } elseif (isset($message['document'])) {
+                $mediaType = 'document';
+                $mediaFileId = $message['document']['file_id'];
+                $messageText = $message['caption'] ?? '';
+            }
+            
+            // Save to admin record
+            $stmt = $db->prepare("UPDATE admins SET broadcast_message = ?, broadcast_media_type = ?, broadcast_media_id = ? WHERE telegram_id = ?");
+            $stmt->execute([$messageText, $mediaType, $mediaFileId, $chat_id]);
+            
+            // Ask target
+            sendMessage($chat_id, "✅ <b>Xabar qabul qilindi!</b>\n\nEndi kimga yuborishni tanlang:", [
+                'inline_keyboard' => [
+                    [['text' => "🌐 Barchaga", 'callback_data' => 'broadcast_target_all']],
+                    [['text' => "👥 Foydalanuvchilarga", 'callback_data' => 'broadcast_target_users']],
+                    [['text' => "👨‍👩‍👧‍👦 Guruhlarga", 'callback_data' => 'broadcast_target_groups']],
+                    [['text' => "📢 Kanallarga", 'callback_data' => 'broadcast_target_channels']],
+                    [['text' => "❌ Bekor qilish", 'callback_data' => 'broadcast_cancel']]
+                ]
+            ]);
+            exit;
+        }
+
         if ($user && !$user['phone'] && isset($message['contact'])) {
             $phone = $message['contact']['phone_number'];
             $stmt = $db->prepare("UPDATE users SET phone = ? WHERE telegram_id = ?");
@@ -333,11 +372,16 @@ if (isset($update['callback_query'])) {
             answerCallback($callback_id, "📢 Habar yuborish");
             editMessage($callback_chat_id, $callback_message_id, 
                 "📢 <b>Habar Yuborish</b>\n\n" .
-                "Habar yuborish uchun quyidagi formatda yuboring:\n\n" .
-                "<code>/send [all|users|groups|channels]\nXabar matni</code>\n\n" .
-                "Yoki media fayl bilan birga caption yozing.\n\n" .
-                "<b>Misol:</b>\n" .
-                "<code>/send all\nYangi xizmatlar haqida e'lon!</code>");
+                "Iltimos, yubormoqchi bo'lgan xabar yoki media faylni yuboring.\n\n" .
+                "• Oddiy matn\n" .
+                "• Rasm + caption\n" .
+                "• Video + caption\n" .
+                "• Hujjat + caption\n\n" .
+                "Xabarni yuborganingizdan keyin, kimga yuborishni tanlaysiz.");
+            
+            // Set broadcast mode for this admin
+            $stmt = $db->prepare("UPDATE admins SET broadcast_mode = 1 WHERE telegram_id = ?");
+            $stmt->execute([$callback_chat_id]);
         }
         elseif ($callback_data == 'show_stats') {
             $totalUsers = $db->query("SELECT COUNT(*) FROM users WHERE telegram_id IS NOT NULL")->fetchColumn();
@@ -408,6 +452,62 @@ if (isset($update['callback_query'])) {
                 "<code>/send all\nXabar matni</code>\n\n" .
                 "<b>Forward qilish:</b>\n" .
                 "Xabarni botga forward qiling");
+        }
+        elseif (strpos($callback_data, 'broadcast_target_') === 0) {
+            $target = str_replace('broadcast_target_', '', $callback_data);
+            
+            // Get saved message
+            $stmt = $db->prepare("SELECT broadcast_message, broadcast_media_type, broadcast_media_id FROM admins WHERE telegram_id = ?");
+            $stmt->execute([$callback_chat_id]);
+            $adminData = $stmt->fetch();
+            
+            if (!$adminData || (!$adminData['broadcast_message'] && !$adminData['broadcast_media_id'])) {
+                answerCallback($callback_id, "❌ Xabar topilmadi");
+                return;
+            }
+            
+            answerCallback($callback_id, "⏳ Yuborilmoqda...");
+            deleteMessage($callback_chat_id, $callback_message_id);
+            
+            sendMessage($callback_chat_id, "⏳ <b>Habar yuborilmoqda...</b>\n\nIltimos kuting...");
+            
+            // Broadcast message
+            $result = broadcastMessage(
+                $target, 
+                $adminData['broadcast_message'], 
+                $adminData['broadcast_media_type'], 
+                $adminData['broadcast_media_id'], 
+                $admin['username']
+            );
+            
+            // Clear broadcast mode
+            $stmt = $db->prepare("UPDATE admins SET broadcast_mode = 0, broadcast_message = NULL, broadcast_media_type = NULL, broadcast_media_id = NULL WHERE telegram_id = ?");
+            $stmt->execute([$callback_chat_id]);
+            
+            // Send result
+            $targetLabels = [
+                'all' => 'Barchaga',
+                'users' => 'Foydalanuvchilarga',
+                'groups' => 'Guruhlarga',
+                'channels' => 'Kanallarga'
+            ];
+            
+            sendMessage($callback_chat_id, 
+                "✅ <b>Habar yuborildi!</b>\n\n" .
+                "📤 Kimga: " . $targetLabels[$target] . "\n" .
+                "✓ Yuborildi: {$result['sent']}\n" .
+                "✗ Xatolik: {$result['failed']}\n" .
+                "📊 Jami: {$result['total']}");
+        }
+        elseif ($callback_data == 'broadcast_cancel') {
+            answerCallback($callback_id, "❌ Bekor qilindi");
+            
+            // Clear broadcast mode
+            $stmt = $db->prepare("UPDATE admins SET broadcast_mode = 0, broadcast_message = NULL, broadcast_media_type = NULL, broadcast_media_id = NULL WHERE telegram_id = ?");
+            $stmt->execute([$callback_chat_id]);
+            
+            deleteMessage($callback_chat_id, $callback_message_id);
+            sendMessage($callback_chat_id, "❌ Habar yuborish bekor qilindi.");
         }
     }
     

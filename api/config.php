@@ -160,6 +160,18 @@ try {
     try {
         $db->exec("ALTER TABLE admins ADD COLUMN last_login TIMESTAMP NULL AFTER is_active");
     } catch (PDOException $e) {}
+    try {
+        $db->exec("ALTER TABLE admins ADD COLUMN broadcast_mode TINYINT(1) DEFAULT 0 AFTER last_login");
+    } catch (PDOException $e) {}
+    try {
+        $db->exec("ALTER TABLE admins ADD COLUMN broadcast_message TEXT NULL AFTER broadcast_mode");
+    } catch (PDOException $e) {}
+    try {
+        $db->exec("ALTER TABLE admins ADD COLUMN broadcast_media_type VARCHAR(20) NULL AFTER broadcast_message");
+    } catch (PDOException $e) {}
+    try {
+        $db->exec("ALTER TABLE admins ADD COLUMN broadcast_media_id VARCHAR(255) NULL AFTER broadcast_media_type");
+    } catch (PDOException $e) {}
 
     $db->exec("CREATE TABLE IF NOT EXISTS news (
         id INT AUTO_INCREMENT PRIMARY KEY,
