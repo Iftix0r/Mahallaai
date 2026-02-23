@@ -592,6 +592,40 @@ $totalAll = $totalUsers + $totalGroups + $totalChannels;
     @media (max-width: 600px) {
         .target-cards { grid-template-columns: 1fr; }
     }
+
+    /* Loading and Progress Animations */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .fa-spinner {
+        animation: spin 1s linear infinite;
+    }
+
+    #uploadProgress {
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    #progressBar {
+        transition: width 0.3s ease;
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    }
+
+    .file-upload-area.uploading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
 </style>
 
 <?php if ($msg): ?>
@@ -705,9 +739,21 @@ $totalAll = $totalUsers + $totalGroups + $totalChannels;
                     </div>
 
                     <!-- Submit -->
-                    <button type="submit" class="btn btn-primary send-btn" onclick="return confirmSend()">
+                    <button type="submit" class="btn btn-primary send-btn" id="sendBtn">
                         <i class="fas fa-paper-plane"></i> Habarni yuborish
                     </button>
+                    
+                    <!-- Progress Bar -->
+                    <div id="uploadProgress" style="display: none; margin-top: 16px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text);" id="progressText">Yuklanmoqda...</span>
+                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary);" id="progressPercent">0%</span>
+                        </div>
+                        <div style="height: 8px; background: #e5e7eb; border-radius: 10px; overflow: hidden;">
+                            <div id="progressBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); transition: width 0.3s ease;"></div>
+                        </div>
+                        <div style="text-align: center; margin-top: 12px; font-size: 0.8rem; color: var(--text-muted);" id="progressStatus"></div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -809,36 +855,44 @@ function handleFileSelect(input) {
     const fileSize = document.getElementById('fileSize');
     const previewImage = document.getElementById('previewImage');
 
-    area.classList.add('has-file');
-    preview.classList.add('active');
-    fileName.textContent = file.name;
-    fileSize.textContent = formatFileSize(file.size);
+    // Show loading animation
+    area.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 10px;">Yuklanmoqda...</p>';
 
-    if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            previewImg.src = e.target.result;
-            previewImg.style.display = 'block';
-            previewImage.src = e.target.result;
-            previewImage.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    } else {
-        previewImg.style.display = 'none';
-        previewImage.style.display = 'none';
+    // Simulate file processing
+    setTimeout(() => {
+        area.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Rasm, video yoki fayl yuklang</p><small>JPG, PNG, GIF, MP4, PDF va boshqalar</small><input type="file" name="media_file" id="mediaFile" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar" onchange="handleFileSelect(this)">';
         
-        // Show file icon instead
-        const iconMap = {
-            'video': '🎬',
-            'application/pdf': '📄',
-            'application': '📁'
-        };
-        let icon = '📎';
-        for (let key in iconMap) {
-            if (file.type.startsWith(key)) { icon = iconMap[key]; break; }
+        area.classList.add('has-file');
+        preview.classList.add('active');
+        fileName.textContent = file.name;
+        fileSize.textContent = formatFileSize(file.size);
+
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewImg.style.display = 'none';
+            previewImage.style.display = 'none';
+            
+            // Show file icon instead
+            const iconMap = {
+                'video': '🎬',
+                'application/pdf': '📄',
+                'application': '📁'
+            };
+            let icon = '📎';
+            for (let key in iconMap) {
+                if (file.type.startsWith(key)) { icon = iconMap[key]; break; }
+            }
+            previewImg.style.display = 'none';
         }
-        previewImg.style.display = 'none';
-    }
+    }, 500);
 }
 
 function removeFile() {
@@ -846,14 +900,6 @@ function removeFile() {
     document.getElementById('uploadArea').classList.remove('has-file');
     document.getElementById('filePreview').classList.remove('active');
     document.getElementById('previewImage').style.display = 'none';
-}
-
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
 function updatePreview() {
@@ -904,19 +950,97 @@ function insertEmoji(emoji) {
     updateCharCount();
 }
 
-function confirmSend() {
+// Handle form submission with progress
+document.getElementById('broadcastForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
     const text = document.getElementById('messageText').value.trim();
     const file = document.getElementById('mediaFile').files[0];
     
     if (!text && !file) {
         alert('Iltimos, xabar matni yozing yoki media fayl yuklang!');
-        return false;
+        return;
     }
     
     const target = document.querySelector('input[name="target"]:checked').value;
     const targetLabels = { all: 'barchaga', users: 'foydalanuvchilarga', groups: 'guruhlarga', channels: 'kanallarga' };
     
-    return confirm(`Habarnqush ${targetLabels[target]} yuborishni tasdiqlaysizmi?`);
+    if (!confirm(`Habarni ${targetLabels[target]} yuborishni tasdiqlaysizmi?`)) {
+        return;
+    }
+    
+    // Show progress
+    const sendBtn = document.getElementById('sendBtn');
+    const uploadProgress = document.getElementById('uploadProgress');
+    const progressBar = document.getElementById('progressBar');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressText = document.getElementById('progressText');
+    const progressStatus = document.getElementById('progressStatus');
+    
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yuborilmoqda...';
+    uploadProgress.style.display = 'block';
+    
+    // Prepare form data
+    const formData = new FormData(this);
+    
+    // Create XMLHttpRequest for progress tracking
+    const xhr = new XMLHttpRequest();
+    
+    // Upload progress
+    xhr.upload.addEventListener('progress', function(e) {
+        if (e.lengthComputable) {
+            const percentComplete = Math.round((e.loaded / e.total) * 100);
+            progressBar.style.width = percentComplete + '%';
+            progressPercent.textContent = percentComplete + '%';
+            
+            if (file) {
+                progressText.textContent = 'Fayl yuklanmoqda...';
+                progressStatus.textContent = `${formatFileSize(e.loaded)} / ${formatFileSize(e.total)}`;
+            } else {
+                progressText.textContent = 'Ma\'lumotlar yuborilmoqda...';
+            }
+        }
+    });
+    
+    // Request complete
+    xhr.addEventListener('load', function() {
+        if (xhr.status === 200) {
+            progressBar.style.width = '100%';
+            progressPercent.textContent = '100%';
+            progressText.textContent = '✅ Muvaffaqiyatli yuborildi!';
+            progressStatus.textContent = 'Habar barcha foydalanuvchilarga yetkazildi';
+            
+            setTimeout(function() {
+                window.location.reload();
+            }, 2000);
+        } else {
+            progressText.textContent = '❌ Xatolik yuz berdi';
+            progressStatus.textContent = 'Iltimos, qaytadan urinib ko\'ring';
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Habarni yuborish';
+        }
+    });
+    
+    // Request error
+    xhr.addEventListener('error', function() {
+        progressText.textContent = '❌ Tarmoq xatosi';
+        progressStatus.textContent = 'Internet aloqasini tekshiring';
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Habarni yuborish';
+    });
+    
+    // Send request
+    xhr.open('POST', '', true);
+    xhr.send(formData);
+});
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 </script>
 

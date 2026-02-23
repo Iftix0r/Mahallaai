@@ -135,3 +135,34 @@ function sendMessage($chat_id, $text, $reply_markup = null) {
     curl_exec($ch);
     curl_close($ch);
 }
+
+// Notify driver about new order
+function notifyDriver($driver_telegram_id, $order_id, $from, $to, $price) {
+    if (!$driver_telegram_id) return;
+    
+    $message = "🔔 <b>Yangi buyurtma!</b>\n\n";
+    $message .= "📍 Qayerdan: $from\n";
+    $message .= "🎯 Qayerga: $to\n";
+    $message .= "💰 Narx: " . number_format($price, 0) . " so'm\n\n";
+    $message .= "Buyurtmani haydovchi panelidan qabul qiling!";
+    
+    sendMessage($driver_telegram_id, $message, [
+        'inline_keyboard' => [
+            [['text' => "🚕 Haydovchi paneli", 'web_app' => ['url' => WEBAPP_URL . '/driver.html']]]
+        ]
+    ]);
+}
+
+// Notify customer about driver assignment
+function notifyCustomer($customer_telegram_id, $driver_name, $car_model, $car_number) {
+    if (!$customer_telegram_id) return;
+    
+    $message = "✅ <b>Haydovchi tayinlandi!</b>\n\n";
+    $message .= "👤 Haydovchi: $driver_name\n";
+    $message .= "🚗 Mashina: $car_model\n";
+    $message .= "🔢 Raqam: $car_number\n\n";
+    $message .= "Haydovchi yo'lda! 3-5 daqiqada yetib keladi.";
+    
+    sendMessage($customer_telegram_id, $message);
+}
+

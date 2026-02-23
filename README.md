@@ -27,7 +27,37 @@
 - 💬 **AI Assistant:** Fuqarolarning savollariga 24/7 rejimida javob beruvchi sun'iy intellekt.
 - 📄 **Onlayn Arizalar:** Ma'lumotnoma va boshqa hujjatlar uchun masofadan ariza topshirish.
 - 🔔 **Tezkor Xabarnomalar:** Mahalla yangiliklari va tadbirlari haqida doimiy xabardorlik.
+- 🚕 **Mahalla Taxi:** Real vaqtda eng yaqin haydovchini topish va buyurtma berish tizimi.
+- 🍔 **Mahalla Ovqatlar:** Mahalla ichidagi restoran va kafe xizmatlari.
+- 🛒 **Mahalla Market:** Mahalla do'konlaridan onlayn xarid qilish.
+- 💼 **Mahalla Ishlar:** Ish e'lonlari va ishga joylashish imkoniyatlari.
 - 🎨 **Premium UI/UX:** Glassmorphism uslubidagi ko'zni charchatmaydigan, premium dizayn.
+
+## 🚕 Taxi Tizimi Xususiyatlari
+
+### Real Vaqtda Ishlash
+- **Geolokatsiya:** Haydovchilarning real vaqtdagi joylashuvini kuzatish
+- **Eng Yaqin Haydovchi:** Buyurtma berilganda avtomatik ravishda eng yaqin haydovchini topish (Haversine formulasi)
+- **Avtomatik Tayinlash:** Tizim avtomatik ravishda eng yaqin bo'sh haydovchini buyurtmaga biriktiradi
+
+### Haydovchi Paneli
+- **Online/Offline Rejim:** Haydovchilar istalgan vaqtda online/offline bo'lishlari mumkin
+- **Buyurtmalarni Qabul Qilish:** Real vaqtda yangi buyurtmalarni ko'rish va qabul qilish
+- **Lokatsiya Kuzatuvi:** Har 30 soniyada haydovchi lokatsiyasi avtomatik yangilanadi
+- **Statistika:** Umumiy safarlar soni, reyting va mashina ma'lumotlari
+
+### Yo'lovchi Paneli
+- **Buyurtma Berish:** Qayerdan va qayerga borish manzilini kiritish
+- **Mashina Tanlash:** Ekonom, Komfort, Business turlari
+- **Real Vaqt Kuzatuvi:** Buyurtma statusini real vaqtda kuzatish
+- **Haydovchi Ma'lumotlari:** Haydovchi ismi, mashina modeli, raqami va telefon raqami
+- **Buyurtmani Bekor Qilish:** Kerak bo'lsa buyurtmani bekor qilish va pul qaytarish
+
+### Backend Xususiyatlari
+- **Haversine Formula:** Ikki nuqta orasidagi masofani hisoblash (km)
+- **Transaction Boshqaruvi:** Pul operatsiyalari xavfsiz transaction bilan amalga oshiriladi
+- **Status Kuzatuvi:** pending → assigned → accepted → completed
+- **Telegram Bildirishnomalar:** Haydovchi va yo'lovchilarga avtomatik xabarlar yuborish
 
 ## 🛠 Texnologik Stek
 

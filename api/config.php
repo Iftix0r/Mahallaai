@@ -208,6 +208,51 @@ try {
             ('\"Obod Mahalla\" yangi bosqichda', 'Mahallamizda yangi suv quvurlari o\'tkazish ishlari boshlandi.', 'https://images.unsplash.com/photo-1541872703-74c5e443d1fe?auto=format&fit=crop&w=400&q=80'),
             ('Haftalik sport musobaqasi', 'Kelasi yakshanba kuni yoshlar o\'rtasida mini-futbol turniri bo\'lib o'tadi.', 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=400&q=80')");
     }
+
+    // Taxi Drivers Table
+    $db->exec("CREATE TABLE IF NOT EXISTS taxi_drivers (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        car_type VARCHAR(50) NOT NULL,
+        car_number VARCHAR(20) NOT NULL,
+        car_model VARCHAR(100),
+        car_color VARCHAR(50),
+        is_online TINYINT(1) DEFAULT 0,
+        is_busy TINYINT(1) DEFAULT 0,
+        current_lat DECIMAL(10, 8) NULL,
+        current_lng DECIMAL(11, 8) NULL,
+        rating DECIMAL(3, 2) DEFAULT 5.00,
+        total_trips INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        UNIQUE KEY unique_driver (user_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // Taxi Orders Table
+    $db->exec("CREATE TABLE IF NOT EXISTS taxi_orders (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        customer_id INT NOT NULL,
+        driver_id INT NULL,
+        car_type VARCHAR(50) NOT NULL,
+        from_address TEXT NOT NULL,
+        to_address TEXT NOT NULL,
+        from_lat DECIMAL(10, 8) NULL,
+        from_lng DECIMAL(11, 8) NULL,
+        to_lat DECIMAL(10, 8) NULL,
+        to_lng DECIMAL(11, 8) NULL,
+        price DECIMAL(10, 2) NOT NULL,
+        status VARCHAR(20) DEFAULT 'pending',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        accepted_at TIMESTAMP NULL,
+        completed_at TIMESTAMP NULL,
+        FOREIGN KEY (customer_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (driver_id) REFERENCES taxi_drivers(id) ON DELETE SET NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // Add location update timestamp
+    try {
+        $db->exec("ALTER TABLE taxi_drivers ADD COLUMN location_updated_at TIMESTAMP NULL AFTER current_lng");
+    } catch (PDOException $e) {}
 } catch (PDOException $e) {
     // Note: In production, you might want to log this instead of dying
     // die("Database error: " . $e->getMessage());
