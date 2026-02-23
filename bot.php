@@ -6,13 +6,41 @@ $update = json_decode($content, true);
 
 if (!$update) exit;
 
-$message = $update['message'] ?? $update['channel_post'] ?? null;
+// ====== 1. Handle my_chat_member — Bot guruh/kanalga qo'shilganda DARHOL saqlaydi ======
+if (isset($update['my_chat_member'])) {
+    $chatMember = $update['my_chat_member'];
+    $mcChat = $chatMember['chat'];
+    $mcChatId = $mcChat['id'];
+    $mcChatType = $mcChat['type'] ?? 'private';
+    $mcChatTitle = $mcChat['title'] ?? $mcChat['first_name'] ?? '';
+    $newStatus = $chatMember['new_chat_member']['status'] ?? '';
+    
+    // Bot guruhga qo'shildi yoki admin qilindi — saqlash
+    if (in_array($newStatus, ['member', 'administrator'])) {
+        try {
+            $stmt = $db->prepare("INSERT INTO chats (chat_id, chat_type, chat_title) VALUES (?, ?, ?) 
+                                  ON DUPLICATE KEY UPDATE chat_title = VALUES(chat_title), chat_type = VALUES(chat_type)");
+            $stmt->execute([$mcChatId, $mcChatType, $mcChatTitle]);
+        } catch (Exception $e) {}
+    }
+    
+    // Bot guruhdan chiqarildi — o'chirish
+    if (in_array($newStatus, ['left', 'kicked'])) {
+        try {
+            $stmt = $db->prepare("DELETE FROM chats WHERE chat_id = ?");
+            $stmt->execute([$mcChatId]);
+        } catch (Exception $e) {}
+    }
+}
+
+// ====== 2. Xabarni olish (oddiy, tahrirlangan, kanal posti) ======
+$message = $update['message'] ?? $update['channel_post'] ?? $update['edited_message'] ?? $update['edited_channel_post'] ?? null;
 $chat_id = $message['chat']['id'] ?? null;
 $text = $message['text'] ?? '';
 $chat_type = $message['chat']['type'] ?? 'private';
 $chat_title = $message['chat']['title'] ?? $message['chat']['first_name'] ?? '';
 
-// Save every chat to the chats table for broadcasting
+// ====== 3. Har qanday xabar kelganda chatni saqlash ======
 if ($chat_id) {
     try {
         $stmt = $db->prepare("INSERT INTO chats (chat_id, chat_type, chat_title) VALUES (?, ?, ?) 
@@ -22,6 +50,7 @@ if ($chat_id) {
         // Ignore
     }
 }
+
 
 if ($chat_id) {
     if ($text == '/start') {
