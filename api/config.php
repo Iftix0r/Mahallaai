@@ -61,6 +61,26 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
+    $db->exec("CREATE TABLE IF NOT EXISTS chats (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        chat_id BIGINT UNIQUE,
+        chat_type VARCHAR(20) DEFAULT 'private',
+        chat_title VARCHAR(255),
+        added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    $db->exec("CREATE TABLE IF NOT EXISTS broadcast_history (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        message_text TEXT,
+        media_type VARCHAR(20),
+        media_file VARCHAR(500),
+        target VARCHAR(50) DEFAULT 'all',
+        total_sent INT DEFAULT 0,
+        total_failed INT DEFAULT 0,
+        sent_by VARCHAR(50),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
     // Insert default admin if none exists (password: admin123)
     $stmt = $db->query("SELECT COUNT(*) FROM admins");
     if ($stmt->fetchColumn() == 0) {

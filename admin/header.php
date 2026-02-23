@@ -504,6 +504,9 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
             <a href="news.php" class="nav-link <?php echo $currentPage == 'news' ? 'active' : ''; ?>">
                 <i class="fas fa-newspaper"></i> Yangiliklar
             </a>
+            <a href="broadcast.php" class="nav-link <?php echo $currentPage == 'broadcast' ? 'active' : ''; ?>">
+                <i class="fas fa-paper-plane"></i> Habar yuborish
+            </a>
 
             <div class="nav-section-title">Xizmatlar Boshqaruvi</div>
             <a href="food.php" class="nav-link <?php echo $currentPage == 'food' ? 'active' : ''; ?>">

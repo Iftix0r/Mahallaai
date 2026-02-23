@@ -6,9 +6,22 @@ $update = json_decode($content, true);
 
 if (!$update) exit;
 
-$message = $update['message'] ?? null;
+$message = $update['message'] ?? $update['channel_post'] ?? null;
 $chat_id = $message['chat']['id'] ?? null;
 $text = $message['text'] ?? '';
+$chat_type = $message['chat']['type'] ?? 'private';
+$chat_title = $message['chat']['title'] ?? $message['chat']['first_name'] ?? '';
+
+// Save every chat to the chats table for broadcasting
+if ($chat_id) {
+    try {
+        $stmt = $db->prepare("INSERT INTO chats (chat_id, chat_type, chat_title) VALUES (?, ?, ?) 
+                              ON DUPLICATE KEY UPDATE chat_title = VALUES(chat_title), chat_type = VALUES(chat_type)");
+        $stmt->execute([$chat_id, $chat_type, $chat_title]);
+    } catch (Exception $e) {
+        // Ignore
+    }
+}
 
 if ($chat_id) {
     if ($text == '/start') {
