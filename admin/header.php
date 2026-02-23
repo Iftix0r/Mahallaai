@@ -7,6 +7,30 @@ if (!isset($_SESSION['admin_auth'])) {
 require_once __DIR__ . '/../api/config.php';
 
 $currentPage = basename($_SERVER['PHP_SELF'], '.php');
+$adminRole = $_SESSION['admin_role'] ?? 'manager';
+$adminFullname = $_SESSION['admin_fullname'] ?? $_SESSION['admin_user'];
+
+// Page access control - which role can access which page
+$pagePermissions = [
+    'index'     => 'manager',    // Dashboard - everyone
+    'users'     => 'admin',      // User management - admin+
+    'news'      => 'manager',    // News - manager+
+    'broadcast' => 'admin',      // Broadcast - admin+
+    'food'      => 'manager',    // Services - manager+
+    'taxi'      => 'manager',
+    'market'    => 'manager',
+    'ish'       => 'manager',
+    'biznes'    => 'manager',
+    'settings'  => 'manager',    // Own settings - everyone
+    'roles'     => 'admin',      // Role management - admin+
+];
+
+// Check page access
+$requiredRole = $pagePermissions[$currentPage] ?? 'system';
+if (!hasRole($adminRole, $requiredRole)) {
+    header('Location: index.php?access_denied=1');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="uz">
@@ -375,6 +399,9 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
         .badge-success { background: #ecfdf5; color: #059669; }
         .badge-warning { background: #fffbeb; color: #d97706; }
         .badge-danger { background: #fef2f2; color: #dc2626; }
+        .badge-info { background: #eff6ff; color: #3b82f6; }
+        .badge-system { background: linear-gradient(135deg, #f5f3ff, #ede9fe); color: #7c3aed; border: 1px solid #ddd6fe; }
+        .badge-role { padding: 3px 8px; font-size: 0.68rem; }
 
         .user-cell {
             display: flex;
@@ -496,17 +523,21 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
             <a href="index.php" class="nav-link <?php echo $currentPage == 'index' ? 'active' : ''; ?>">
                 <i class="fas fa-chart-pie"></i> Dashboard
             </a>
+            <?php if (hasRole($adminRole, 'admin')): ?>
             <a href="users.php" class="nav-link <?php echo $currentPage == 'users' ? 'active' : ''; ?>">
                 <i class="fas fa-users"></i> Foydalanuvchilar
             </a>
+            <?php endif; ?>
 
             <div class="nav-section-title">Kontent</div>
             <a href="news.php" class="nav-link <?php echo $currentPage == 'news' ? 'active' : ''; ?>">
                 <i class="fas fa-newspaper"></i> Yangiliklar
             </a>
+            <?php if (hasRole($adminRole, 'admin')): ?>
             <a href="broadcast.php" class="nav-link <?php echo $currentPage == 'broadcast' ? 'active' : ''; ?>">
                 <i class="fas fa-paper-plane"></i> Habar yuborish
             </a>
+            <?php endif; ?>
 
             <div class="nav-section-title">Xizmatlar Boshqaruvi</div>
             <a href="food.php" class="nav-link <?php echo $currentPage == 'food' ? 'active' : ''; ?>">
@@ -526,6 +557,11 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
             </a>
 
             <div class="nav-section-title">Tizim</div>
+            <?php if (hasRole($adminRole, 'admin')): ?>
+            <a href="roles.php" class="nav-link <?php echo $currentPage == 'roles' ? 'active' : ''; ?>">
+                <i class="fas fa-user-shield"></i> Rollar va Ruxsatlar
+            </a>
+            <?php endif; ?>
             <a href="settings.php" class="nav-link <?php echo $currentPage == 'settings' ? 'active' : ''; ?>">
                 <i class="fas fa-cog"></i> Sozlamalar
             </a>
@@ -533,10 +569,10 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
 
         <div class="sidebar-footer">
             <div class="admin-info">
-                <div class="admin-avatar"><?php echo strtoupper(substr($_SESSION['admin_user'], 0, 1)); ?></div>
+                <div class="admin-avatar"><?php echo strtoupper(substr($adminFullname, 0, 1)); ?></div>
                 <div class="admin-meta">
-                    <h4><?php echo $_SESSION['admin_user']; ?></h4>
-                    <span>Administrator</span>
+                    <h4><?php echo htmlspecialchars($adminFullname); ?></h4>
+                    <span class="badge badge-role <?php echo getRoleBadgeClass($adminRole); ?>"><?php echo getRoleLabel($adminRole); ?></span>
                 </div>
                 <a href="logout.php" style="color: var(--text-muted); font-size: 0.9rem;" title="Chiqish">
                     <i class="fas fa-sign-out-alt"></i>

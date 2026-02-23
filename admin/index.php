@@ -10,6 +10,10 @@ $newsCount = $db->query("SELECT COUNT(*) FROM news")->fetchColumn();
 
 <script>document.getElementById('page-title').innerText = 'Dashboard';</script>
 
+<?php if (isset($_GET['access_denied'])): ?>
+    <div class="alert alert-danger"><i class="fas fa-ban"></i> Bu sahifaga kirish uchun ruxsatingiz yo'q! Sizning rolingiz: <?php echo getRoleLabel($adminRole); ?></div>
+<?php endif; ?>
+
 <!-- Stats -->
 <div class="stats-grid">
     <div class="stat-card">

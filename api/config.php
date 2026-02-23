@@ -4,6 +4,47 @@ define('BOT_TOKEN', '8379929665:AAHkLCyvqYAIUN2McdW5eRFz7JjRLq1Uut8'); // User s
 define('API_URL', 'https://api.telegram.org/bot' . BOT_TOKEN . '/');
 define('WEBAPP_URL', 'https://mahallaai.bigsaver.ru/index.html'); // Web App URL
 
+// Role levels (kattasi ko'proq huquqga ega)
+define('ROLE_USER', 'user');
+define('ROLE_MANAGER', 'manager');
+define('ROLE_ADMIN', 'admin');
+define('ROLE_SYSTEM', 'system');
+
+// Role hierarchy (raqam katta = ko'proq huquq)
+define('ROLE_LEVELS', [
+    'user' => 1,
+    'manager' => 2,
+    'admin' => 3,
+    'system' => 4
+]);
+
+// Check if role has at least required level
+function hasRole($currentRole, $requiredRole) {
+    $levels = ROLE_LEVELS;
+    return ($levels[$currentRole] ?? 0) >= ($levels[$requiredRole] ?? 999);
+}
+
+// Role labels for display
+function getRoleLabel($role) {
+    $labels = [
+        'user' => '👤 Foydalanuvchi',
+        'manager' => '👔 Manager',
+        'admin' => '🛡️ Admin',
+        'system' => '⚙️ Tizim'
+    ];
+    return $labels[$role] ?? '👤 Foydalanuvchi';
+}
+
+function getRoleBadgeClass($role) {
+    $classes = [
+        'user' => 'badge-info',
+        'manager' => 'badge-warning',
+        'admin' => 'badge-success',
+        'system' => 'badge-system'
+    ];
+    return $classes[$role] ?? 'badge-info';
+}
+
 // Database Configuration
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'mahalla_db');
@@ -50,8 +91,30 @@ try {
         id INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(50) UNIQUE,
         password VARCHAR(255),
+        role VARCHAR(20) DEFAULT 'manager',
+        fullname VARCHAR(255) DEFAULT '',
+        telegram_id BIGINT NULL,
+        is_active TINYINT(1) DEFAULT 1,
+        last_login TIMESTAMP NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // Add role column to admins if not exists
+    try {
+        $db->exec("ALTER TABLE admins ADD COLUMN role VARCHAR(20) DEFAULT 'manager' AFTER password");
+    } catch (PDOException $e) {}
+    try {
+        $db->exec("ALTER TABLE admins ADD COLUMN fullname VARCHAR(255) DEFAULT '' AFTER role");
+    } catch (PDOException $e) {}
+    try {
+        $db->exec("ALTER TABLE admins ADD COLUMN telegram_id BIGINT NULL AFTER fullname");
+    } catch (PDOException $e) {}
+    try {
+        $db->exec("ALTER TABLE admins ADD COLUMN is_active TINYINT(1) DEFAULT 1 AFTER telegram_id");
+    } catch (PDOException $e) {}
+    try {
+        $db->exec("ALTER TABLE admins ADD COLUMN last_login TIMESTAMP NULL AFTER is_active");
+    } catch (PDOException $e) {}
 
     $db->exec("CREATE TABLE IF NOT EXISTS news (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -81,12 +144,17 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
-    // Insert default admin if none exists (password: admin123)
+    // Insert default system admin if none exists (password: admin123)
     $stmt = $db->query("SELECT COUNT(*) FROM admins");
     if ($stmt->fetchColumn() == 0) {
         $hash = password_hash('admin123', PASSWORD_DEFAULT);
-        $db->exec("INSERT INTO admins (username, password) VALUES ('admin', '$hash')");
+        $db->exec("INSERT INTO admins (username, password, role, fullname) VALUES ('admin', '$hash', 'system', 'Tizim Administratori')");
     }
+
+    // Update existing admin without role to system
+    try {
+        $db->exec("UPDATE admins SET role = 'system' WHERE username = 'admin' AND (role IS NULL OR role = '')");
+    } catch (PDOException $e) {}
 
     // Insert default news if none exists
     $stmt = $db->query("SELECT COUNT(*) FROM news");

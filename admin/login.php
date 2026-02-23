@@ -17,10 +17,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $admin = $stmt->fetch();
 
     if ($admin && password_verify($password, $admin['password'])) {
-        $_SESSION['admin_auth'] = true;
-        $_SESSION['admin_user'] = $admin['username'];
-        header('Location: index.php');
-        exit;
+        // Check if account is active
+        if (isset($admin['is_active']) && $admin['is_active'] == 0) {
+            $error = "Hisobingiz bloklangan! Tizim administratoriga murojaat qiling.";
+        } else {
+            $_SESSION['admin_auth'] = true;
+            $_SESSION['admin_user'] = $admin['username'];
+            $_SESSION['admin_id'] = $admin['id'];
+            $_SESSION['admin_role'] = $admin['role'] ?? 'manager';
+            $_SESSION['admin_fullname'] = $admin['fullname'] ?? $admin['username'];
+            
+            // Update last login
+            try {
+                $db->prepare("UPDATE admins SET last_login = NOW() WHERE id = ?")->execute([$admin['id']]);
+            } catch (Exception $e) {}
+            
+            header('Location: index.php');
+            exit;
+        }
     } else {
         $error = "Xato foydalanuvchi nomi yoki parol!";
     }
