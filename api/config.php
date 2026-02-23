@@ -70,6 +70,46 @@ try {
         registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 
+    // Businesses Table
+    $db->exec("CREATE TABLE IF NOT EXISTS businesses (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        owner_id INT NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        category VARCHAR(50) NOT NULL,
+        logo VARCHAR(255) DEFAULT '',
+        is_open TINYINT(1) DEFAULT 1,
+        delivery_price DECIMAL(10, 2) DEFAULT 0.00,
+        address TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // Products (Menu items) Table
+    $db->exec("CREATE TABLE IF NOT EXISTS products (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        business_id INT NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        price DECIMAL(15, 2) NOT NULL,
+        image VARCHAR(255) DEFAULT '',
+        is_available TINYINT(1) DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // Orders Table
+    $db->exec("CREATE TABLE IF NOT EXISTS orders (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        customer_id INT NOT NULL,
+        business_id INT NOT NULL,
+        total_amount DECIMAL(15, 2) NOT NULL,
+        status VARCHAR(20) DEFAULT 'pending',
+        items JSON NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (customer_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
     try {
         $db->exec("ALTER TABLE users ADD COLUMN balance DECIMAL(15, 2) DEFAULT 0.00 AFTER mahalla");
     } catch (PDOException $e) {}

@@ -24,6 +24,38 @@ if ($method == 'GET') {
         $news = $stmt->fetchAll();
         echo json_encode($news);
     }
+
+    if ($action == 'get_businesses') {
+        $cat = $_GET['category'] ?? '';
+        if ($cat) {
+            $stmt = $db->prepare("SELECT * FROM businesses WHERE category = ? AND is_open = 1");
+            $stmt->execute([$cat]);
+        } else {
+            $stmt = $db->query("SELECT * FROM businesses WHERE is_open = 1");
+        }
+        echo json_encode($stmt->fetchAll());
+    }
+
+    if ($action == 'get_products') {
+        $biz_id = $_GET['business_id'] ?? 0;
+        $stmt = $db->prepare("SELECT * FROM products WHERE business_id = ? AND is_available = 1");
+        $stmt->execute([$biz_id]);
+        echo json_encode($stmt->fetchAll());
+    }
+
+    if ($action == 'get_my_business') {
+        $owner_id = $_GET['owner_id'] ?? 0;
+        $stmt = $db->prepare("SELECT * FROM businesses WHERE owner_id = ?");
+        $stmt->execute([$owner_id]);
+        echo json_encode($stmt->fetch());
+    }
+
+    if ($action == 'get_business_orders') {
+        $biz_id = $_GET['business_id'] ?? 0;
+        $stmt = $db->prepare("SELECT o.*, u.fullname as customer_name FROM orders o JOIN users u ON o.customer_id = u.id WHERE o.business_id = ? ORDER BY o.created_at DESC");
+        $stmt->execute([$biz_id]);
+        echo json_encode($stmt->fetchAll());
+    }
 }
 
 if ($method == 'POST') {
@@ -155,6 +187,66 @@ if ($method == 'POST') {
             }
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Invalid data']);
+        }
+    }
+
+    if ($action == 'create_business') {
+        $owner_id = $data['owner_id'] ?? 0;
+        $name = $data['name'] ?? '';
+        $category = $data['category'] ?? '';
+
+        if (!$owner_id || !$name || !$category) {
+            echo json_encode(['status' => 'error', 'message' => 'To\'liq ma\'lumot kiriting']);
+            exit;
+        }
+
+        try {
+            $stmt = $db->prepare("INSERT INTO businesses (owner_id, name, category) VALUES (?, ?, ?)");
+            $stmt->execute([$owner_id, $name, $category]);
+            echo json_encode(['status' => 'success', 'business_id' => $db->lastInsertId()]);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    if ($action == 'add_product') {
+        $biz_id = $data['business_id'] ?? 0;
+        $stmt = $db->prepare("INSERT INTO products (business_id, name, price, description, image) VALUES (?, ?, ?, ?, ?)");
+        try {
+            $stmt->execute([$biz_id, $data['name'], $data['price'], $data['description'] ?? '', $data['image'] ?? '']);
+            echo json_encode(['status' => 'success']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    if ($action == 'place_order') {
+        $cust_id = $data['customer_id'] ?? 0;
+        $biz_id = $data['business_id'] ?? 0;
+        $amount = (float)$data['total_amount'];
+        $items = json_encode($data['items']);
+
+        try {
+            $db->beginTransaction();
+
+            $stmt = $db->prepare("SELECT balance FROM users WHERE id = ?");
+            $stmt->execute([$cust_id]);
+            $bal = (float)$stmt->fetchColumn();
+
+            if ($bal < $amount) {
+                echo json_encode(['status' => 'error', 'message' => 'Balans yetarli emas']);
+                $db->rollBack();
+                exit;
+            }
+
+            $db->prepare("UPDATE users SET balance = balance - ? WHERE id = ?")->execute([$amount, $cust_id]);
+            $db->prepare("INSERT INTO orders (customer_id, business_id, total_amount, items) VALUES (?, ?, ?, ?)")->execute([$cust_id, $biz_id, $amount, $items]);
+
+            $db->commit();
+            echo json_encode(['status' => 'success', 'new_balance' => $bal - $amount]);
+        } catch (Exception $e) {
+            $db->rollBack();
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 }
