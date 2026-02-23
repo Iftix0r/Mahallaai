@@ -11,9 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_broadcast'])) {
     $mediaType = 'text';
     $mediaFile = '';
     
-    // Debug: Log file upload info
-    error_log("File upload debug: " . print_r($_FILES, true));
-    
     // Handle file upload
     if (isset($_FILES['media_file']) && $_FILES['media_file']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = __DIR__ . '/uploads/';
@@ -26,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_broadcast'])) {
         
         // Detect media type
         $mimeType = $_FILES['media_file']['type'];
-        error_log("MIME Type: " . $mimeType);
         
         if (strpos($mimeType, 'image/') === 0) {
             $mediaType = 'photo';
@@ -38,14 +34,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_broadcast'])) {
         
         if (move_uploaded_file($_FILES['media_file']['tmp_name'], $filePath)) {
             $mediaFile = $filePath;
-            error_log("File uploaded successfully: " . $mediaFile . " Type: " . $mediaType);
         } else {
             $msg = 'Fayl yuklashda xatolik!';
             $msgType = 'danger';
-            error_log("File upload failed!");
         }
-    } elseif (isset($_FILES['media_file'])) {
-        error_log("File upload error code: " . $_FILES['media_file']['error']);
+    } elseif (isset($_FILES['media_file']) && $_FILES['media_file']['error'] !== UPLOAD_ERR_NO_FILE) {
+        // File upload error
+        $uploadErrors = [
+            UPLOAD_ERR_INI_SIZE => 'Fayl hajmi juda katta (php.ini)',
+            UPLOAD_ERR_FORM_SIZE => 'Fayl hajmi juda katta (form)',
+            UPLOAD_ERR_PARTIAL => 'Fayl qisman yuklandi',
+            UPLOAD_ERR_NO_TMP_DIR => 'Vaqtinchalik papka topilmadi',
+            UPLOAD_ERR_CANT_WRITE => 'Faylni yozib bo\'lmadi',
+            UPLOAD_ERR_EXTENSION => 'PHP kengaytmasi faylni to\'xtatdi'
+        ];
+        $errorCode = $_FILES['media_file']['error'];
+        $msg = 'Fayl yuklashda xatolik: ' . ($uploadErrors[$errorCode] ?? "Noma'lum xatolik ($errorCode)");
+        $msgType = 'danger';
     }
     
     if (empty($messageText) && empty($mediaFile)) {
@@ -975,7 +980,8 @@ document.getElementById('broadcastForm').addEventListener('submit', function(e) 
     e.preventDefault();
     
     const text = document.getElementById('messageText').value.trim();
-    const file = document.getElementById('mediaFile').files[0];
+    const fileInput = document.getElementById('mediaFile');
+    const file = fileInput.files[0];
     
     if (!text && !file) {
         alert('Iltimos, xabar matni yozing yoki media fayl yuklang!');
@@ -1001,8 +1007,17 @@ document.getElementById('broadcastForm').addEventListener('submit', function(e) 
     sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yuborilmoqda...';
     uploadProgress.style.display = 'block';
     
-    // Prepare form data
-    const formData = new FormData(this);
+    // Prepare form data - IMPORTANT: Get fresh FormData from form
+    const formData = new FormData();
+    formData.append('send_broadcast', '1');
+    formData.append('message_text', text);
+    formData.append('target', target);
+    
+    // Add file if exists
+    if (file) {
+        formData.append('media_file', file);
+        console.log('File added to FormData:', file.name, file.size, file.type);
+    }
     
     // Create XMLHttpRequest for progress tracking
     const xhr = new XMLHttpRequest();
@@ -1025,6 +1040,9 @@ document.getElementById('broadcastForm').addEventListener('submit', function(e) 
     
     // Request complete
     xhr.addEventListener('load', function() {
+        console.log('Response status:', xhr.status);
+        console.log('Response text:', xhr.responseText);
+        
         if (xhr.status === 200) {
             progressBar.style.width = '100%';
             progressPercent.textContent = '100%';
@@ -1044,14 +1062,25 @@ document.getElementById('broadcastForm').addEventListener('submit', function(e) 
     
     // Request error
     xhr.addEventListener('error', function() {
+        console.error('XHR Error');
         progressText.textContent = '❌ Tarmoq xatosi';
         progressStatus.textContent = 'Internet aloqasini tekshiring';
         sendBtn.disabled = false;
         sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Habarni yuborish';
     });
     
+    // Timeout handler
+    xhr.addEventListener('timeout', function() {
+        console.error('XHR Timeout');
+        progressText.textContent = '❌ Vaqt tugadi';
+        progressStatus.textContent = 'Server javob bermadi';
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Habarni yuborish';
+    });
+    
     // Send request
-    xhr.open('POST', '', true);
+    xhr.open('POST', window.location.href, true);
+    xhr.timeout = 300000; // 5 minutes timeout for large files
     xhr.send(formData);
 });
 
