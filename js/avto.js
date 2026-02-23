@@ -247,7 +247,182 @@ function applyFilters() {
     loadCars(filters);
 }
 
+// Show add car form modal
+window.showAddCarForm = function() {
+    if (!window.currentUser) {
+        tg.showAlert('Iltimos, tizimga kiring!');
+        return;
+    }
+    document.getElementById('add-car-modal').classList.remove('hidden');
+};
+
+// Close add car modal
+window.closeAddCarModal = function() {
+    document.getElementById('add-car-modal').classList.add('hidden');
+    document.getElementById('add-car-form').reset();
+};
+
+// Load my cars
+async function loadMyCars() {
+    if (!window.currentUser) {
+        const container = document.getElementById('my-cars-container');
+        if (container) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user"></i>
+                    <p>Iltimos, tizimga kiring</p>
+                </div>
+            `;
+        }
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${AVTO_API}?action=get_my_cars&user_id=${window.currentUser.id}`);
+        const cars = await response.json();
+        
+        const container = document.getElementById('my-cars-container');
+        if (!container) return;
+        
+        if (cars.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-car"></i>
+                    <p>Sizda hali e'lonlar yo'q</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = cars.map(car => `
+            <div class="car-card">
+                <div class="car-image-container">
+                    ${car.images ? 
+                        `<img src="${car.images.split(',')[0]}" class="car-image" alt="${car.brand} ${car.model}">` :
+                        `<div class="car-image" style="display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-car" style="font-size: 3rem; color: #adb5bd;"></i>
+                        </div>`
+                    }
+                </div>
+                <div class="car-content">
+                    <div class="car-title">${car.brand} ${car.model}</div>
+                    <div class="car-specs">
+                        <span class="car-spec"><i class="fas fa-calendar"></i> ${car.year}</span>
+                        <span class="car-spec"><i class="fas fa-tachometer-alt"></i> ${parseInt(car.mileage).toLocaleString()} km</span>
+                    </div>
+                    <div class="car-price">${parseInt(car.price).toLocaleString()}</div>
+                    <div style="display: flex; gap: 8px; margin-top: 12px;">
+                        <button onclick="editCar(${car.id})" style="flex: 1; padding: 8px; border: 1px solid #e5e7eb; border-radius: 8px; background: white; cursor: pointer;">
+                            <i class="fas fa-edit"></i> Tahrirlash
+                        </button>
+                        <button onclick="deleteCar(${car.id})" style="flex: 1; padding: 8px; border: 1px solid #ef4444; border-radius: 8px; background: white; color: #ef4444; cursor: pointer;">
+                            <i class="fas fa-trash"></i> O'chirish
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading my cars:', error);
+    }
+}
+
+// Handle add car form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('add-car-form');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!window.currentUser) {
+                tg.showAlert('Iltimos, tizimga kiring!');
+                return;
+            }
+            
+            const carData = {
+                brand: document.getElementById('car-brand').value,
+                model: document.getElementById('car-model').value,
+                year: document.getElementById('car-year').value,
+                price: document.getElementById('car-price').value,
+                mileage: document.getElementById('car-mileage').value || 0,
+                fuel_type: document.getElementById('car-fuel').value,
+                transmission: document.getElementById('car-transmission').value,
+                color: document.getElementById('car-color').value,
+                seller_phone: document.getElementById('car-phone').value,
+                location: document.getElementById('car-location').value,
+                description: document.getElementById('car-description').value,
+                listing_type: 'private'
+            };
+            
+            await addCar(carData);
+            closeAddCarModal();
+            switchAvtoTab('my');
+        });
+    }
+});
+
+// Delete car
+async function deleteCar(carId) {
+    if (!confirm('E\'lonni o\'chirishni xohlaysizmi?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(AVTO_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'delete_car',
+                car_id: carId,
+                seller_id: window.currentUser.id
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            tg.showAlert('✅ E\'lon o\'chirildi!');
+            loadMyCars();
+        } else {
+            tg.showAlert('❌ Xatolik: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error deleting car:', error);
+        tg.showAlert('❌ Xatolik yuz berdi!');
+    }
+}
+
+// Edit car (placeholder)
+function editCar(carId) {
+    tg.showAlert('Tahrirlash funksiyasi tez orada qo\'shiladi!');
+}
+
+// Load brands dynamically
+async function loadBrands() {
+    try {
+        const response = await fetch(`${AVTO_API}?action=get_brands`);
+        const brands = await response.json();
+        
+        const select = document.getElementById('filter-brand');
+        if (select && brands.length > 0) {
+            brands.forEach(brand => {
+                const option = document.createElement('option');
+                option.value = brand;
+                option.textContent = brand;
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading brands:', error);
+    }
+}
+
 // Initialize
 if (typeof tg !== 'undefined') {
     tg.ready();
 }
+
+// Load initial data when avto app is opened
+document.addEventListener('DOMContentLoaded', function() {
+    loadBrands();
+});

@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="css/abedu.css">
     <link rel="stylesheet" href="css/biznes.css">
     <link rel="stylesheet" href="css/bank.css">
+    <link rel="stylesheet" href="css/avto.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
@@ -106,6 +108,14 @@
                     <div class="card-text">
                         <h3>AB Education</h3>
                         <p>Aka-uka Bektoshevlar zamonaviy ta'lim markazi</p>
+                    </div>
+                </div>
+                <div class="selection-card avto" onclick="switchTab('avto')">
+                    <div class="card-glow"></div>
+                    <div class="card-icon-large">🚗</div>
+                    <div class="card-text">
+                        <h3>Mahalla Avto</h3>
+                        <p>Mashina e'lonlari va avtosalonlar</p>
                     </div>
                 </div>
             </div>
@@ -950,6 +960,168 @@
     </div>
     </div>
 
+    <!-- Mahalla Avto App -->
+    <div id="avto-app" class="screen hidden">
+        <header style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; position: sticky; top: 0; z-index: 100;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="back-to-menu" onclick="switchTab('menu')" style="background: rgba(255,255,255,0.2); color: white; border: none;">←</button>
+                <h3 style="font-weight: 700; font-size: 1.1rem;">🚗 Mahalla Avto</h3>
+            </div>
+        </header>
+
+        <div class="avto-container">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchAvtoTab('cars')">Mashinalar</button>
+                <button class="tab" onclick="switchAvtoTab('salons')">Avtosalonlar</button>
+                <button class="tab" onclick="switchAvtoTab('my')">Mening E'lonlarim</button>
+            </div>
+
+            <!-- Cars Tab -->
+            <div id="avto-cars-tab" class="avto-tab-content">
+                <!-- Filters -->
+                <div class="filters-section">
+                    <div class="filter-grid">
+                        <div class="filter-group">
+                            <label>Turi</label>
+                            <select id="filter-type">
+                                <option value="">Barchasi</option>
+                                <option value="salon">Avtosalon</option>
+                                <option value="private">Shaxsiy</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Brend</label>
+                            <select id="filter-brand">
+                                <option value="">Barcha brendlar</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Min Narx ($)</label>
+                            <input type="number" id="filter-min-price" placeholder="0">
+                        </div>
+                        <div class="filter-group">
+                            <label>Max Narx ($)</label>
+                            <input type="number" id="filter-max-price" placeholder="100000">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="applyFilters()" style="margin-top: 16px; width: 100%;">
+                        <i class="fas fa-search"></i> Qidirish
+                    </button>
+                </div>
+
+                <!-- Cars Grid -->
+                <div id="cars-container" class="cars-grid"></div>
+            </div>
+
+            <!-- Salons Tab -->
+            <div id="avto-salons-tab" class="avto-tab-content hidden">
+                <div id="salons-container"></div>
+            </div>
+
+            <!-- My Cars Tab -->
+            <div id="avto-my-tab" class="avto-tab-content hidden">
+                <button class="btn btn-primary" onclick="showAddCarForm()" style="margin-bottom: 20px; width: 100%;">
+                    <i class="fas fa-plus"></i> E'lon Berish
+                </button>
+                <div id="my-cars-container"></div>
+            </div>
+        </div>
+
+        <!-- Add Car Modal -->
+        <div id="add-car-modal" class="modal-backdrop hidden">
+            <div class="modal" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h3>E'lon Berish</h3>
+                    <button onclick="closeAddCarModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-car-form" class="add-car-form">
+                        <div class="form-section">
+                            <h3>Asosiy Ma'lumotlar</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Brend *</label>
+                                    <input type="text" id="car-brand" required placeholder="Toyota">
+                                </div>
+                                <div class="form-group">
+                                    <label>Model *</label>
+                                    <input type="text" id="car-model" required placeholder="Camry">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Yil *</label>
+                                    <input type="number" id="car-year" required placeholder="2020">
+                                </div>
+                                <div class="form-group">
+                                    <label>Narx ($) *</label>
+                                    <input type="number" id="car-price" required placeholder="25000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Texnik Xususiyatlar</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Yurgan (km)</label>
+                                    <input type="number" id="car-mileage" placeholder="50000">
+                                </div>
+                                <div class="form-group">
+                                    <label>Yoqilg'i</label>
+                                    <select id="car-fuel">
+                                        <option value="Benzin">Benzin</option>
+                                        <option value="Dizel">Dizel</option>
+                                        <option value="Gaz">Gaz</option>
+                                        <option value="Elektr">Elektr</option>
+                                        <option value="Gibrid">Gibrid</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Uzatma</label>
+                                    <select id="car-transmission">
+                                        <option value="Avtomat">Avtomat</option>
+                                        <option value="Mexanik">Mexanik</option>
+                                        <option value="Robot">Robot</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Rang</label>
+                                    <input type="text" id="car-color" placeholder="Oq">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Aloqa</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Telefon *</label>
+                                    <input type="tel" id="car-phone" required placeholder="+998901234567">
+                                </div>
+                                <div class="form-group">
+                                    <label>Joylashuv</label>
+                                    <input type="text" id="car-location" placeholder="Toshkent, Chilonzor">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Tavsif</label>
+                                <textarea id="car-description" placeholder="Mashina haqida qo'shimcha ma'lumot..."></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-check"></i> E'lon Berish
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/core.js"></script>
     <script src="js/chat.js"></script>
     <script src="js/food.js"></script>
@@ -957,6 +1129,7 @@
     <script src="js/market.js"></script>
     <script src="js/ish.js"></script>
     <script src="js/biznes.js"></script>
+    <script src="js/avto.js"></script>
 
     <script>
         // Auth Logic

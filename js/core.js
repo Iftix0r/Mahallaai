@@ -172,7 +172,8 @@ function switchTab(tabId) {
         'ish': 'ish-app',
         'abedu': 'abedu-app',
         'biznes': 'biznes-app',
-        'bank': 'bank-app'
+        'bank': 'bank-app',
+        'avto': 'avto-app'
     };
 
     const targetScreenId = screens[tabId];
@@ -187,6 +188,15 @@ function switchTab(tabId) {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         if (tabId === 'system') document.querySelector('.nav-item:nth-child(1)').classList.add('active');
         if (tabId === 'chat') document.querySelector('.nav-item:nth-child(3)').classList.add('active');
+    }
+    
+    // Initialize avto app when opened
+    if (tabId === 'avto') {
+        setTimeout(() => {
+            if (typeof switchAvtoTab === 'function') {
+                switchAvtoTab('cars');
+            }
+        }, 100);
     }
 }
 
@@ -331,6 +341,46 @@ window.payWithBalance = async function (amount) {
         console.error(e);
         tg.showAlert("To'lov jarayonida xatolik yuz berdi.");
         return false;
+    }
+};
+
+// ===== AVTO TAB SWITCHING =====
+window.switchAvtoTab = function(tabName) {
+    // Hide all avto tabs
+    document.querySelectorAll('.avto-tab-content').forEach(tab => {
+        tab.classList.add('hidden');
+    });
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.tabs .tab').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab
+    const tabMap = {
+        'cars': 'avto-cars-tab',
+        'salons': 'avto-salons-tab',
+        'my': 'avto-my-tab'
+    };
+    
+    const targetTab = document.getElementById(tabMap[tabName]);
+    if (targetTab) {
+        targetTab.classList.remove('hidden');
+    }
+    
+    // Add active class to clicked button
+    const buttons = document.querySelectorAll('.tabs .tab');
+    if (tabName === 'cars') buttons[0]?.classList.add('active');
+    if (tabName === 'salons') buttons[1]?.classList.add('active');
+    if (tabName === 'my') buttons[2]?.classList.add('active');
+    
+    // Load data for the tab
+    if (tabName === 'cars') {
+        if (typeof loadCars === 'function') loadCars();
+    } else if (tabName === 'salons') {
+        if (typeof loadSalons === 'function') loadSalons();
+    } else if (tabName === 'my') {
+        if (typeof loadMyCars === 'function') loadMyCars();
     }
 };
 
