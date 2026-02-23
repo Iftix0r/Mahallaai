@@ -39,8 +39,26 @@ if ($method == 'GET') {
 
     if ($action == 'get_products') {
         $biz_id = $_GET['business_id'] ?? 0;
-        $stmt = $db->prepare("SELECT * FROM products WHERE business_id = ? AND is_available = 1");
-        $stmt->execute([$biz_id]);
+        $category = $_GET['category'] ?? '';
+        
+        if ($biz_id) {
+            $stmt = $db->prepare("SELECT * FROM products WHERE business_id = ? AND is_available = 1 ORDER BY created_at DESC");
+            $stmt->execute([$biz_id]);
+        } else if ($category) {
+            // Get all products from businesses in this category
+            $stmt = $db->prepare("SELECT p.*, b.name as business_name 
+                                 FROM products p 
+                                 JOIN businesses b ON p.business_id = b.id 
+                                 WHERE b.category = ? AND p.is_available = 1 AND b.is_open = 1
+                                 ORDER BY p.created_at DESC");
+            $stmt->execute([$category]);
+        } else {
+            $stmt = $db->query("SELECT p.*, b.name as business_name 
+                               FROM products p 
+                               JOIN businesses b ON p.business_id = b.id 
+                               WHERE p.is_available = 1 AND b.is_open = 1
+                               ORDER BY p.created_at DESC");
+        }
         echo json_encode($stmt->fetchAll());
     }
 
@@ -53,9 +71,64 @@ if ($method == 'GET') {
 
     if ($action == 'get_business_orders') {
         $biz_id = $_GET['business_id'] ?? 0;
-        $stmt = $db->prepare("SELECT o.*, u.fullname as customer_name FROM orders o JOIN users u ON o.customer_id = u.id WHERE o.business_id = ? ORDER BY o.created_at DESC");
-        $stmt->execute([$biz_id]);
+        $status = $_GET['status'] ?? '';
+        
+        $query = "SELECT o.*, u.fullname as customer_name, u.phone as customer_phone 
+                 FROM orders o 
+                 JOIN users u ON o.customer_id = u.id 
+                 WHERE o.business_id = ?";
+        
+        $params = [$biz_id];
+        
+        if ($status) {
+            $query .= " AND o.status = ?";
+            $params[] = $status;
+        }
+        
+        $query .= " ORDER BY o.created_at DESC";
+        
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
         echo json_encode($stmt->fetchAll());
+    }
+    
+    if ($action == 'get_business_stats') {
+        $biz_id = $_GET['business_id'] ?? 0;
+        
+        // Today's revenue
+        $stmt = $db->prepare("SELECT COALESCE(SUM(total_amount), 0) as today_revenue 
+                             FROM orders 
+                             WHERE business_id = ? AND DATE(created_at) = CURDATE()");
+        $stmt->execute([$biz_id]);
+        $today = $stmt->fetch();
+        
+        // Total orders today
+        $stmt = $db->prepare("SELECT COUNT(*) as today_orders 
+                             FROM orders 
+                             WHERE business_id = ? AND DATE(created_at) = CURDATE()");
+        $stmt->execute([$biz_id]);
+        $orders = $stmt->fetch();
+        
+        // Pending orders
+        $stmt = $db->prepare("SELECT COUNT(*) as pending_orders 
+                             FROM orders 
+                             WHERE business_id = ? AND status = 'pending'");
+        $stmt->execute([$biz_id]);
+        $pending = $stmt->fetch();
+        
+        // Total products
+        $stmt = $db->prepare("SELECT COUNT(*) as total_products 
+                             FROM products 
+                             WHERE business_id = ? AND is_available = 1");
+        $stmt->execute([$biz_id]);
+        $products = $stmt->fetch();
+        
+        echo json_encode([
+            'today_revenue' => $today['today_revenue'],
+            'today_orders' => $orders['today_orders'],
+            'pending_orders' => $pending['pending_orders'],
+            'total_products' => $products['total_products']
+        ]);
     }
 }
 
@@ -212,9 +285,111 @@ if ($method == 'POST') {
 
     if ($action == 'add_product') {
         $biz_id = $data['business_id'] ?? 0;
-        $stmt = $db->prepare("INSERT INTO products (business_id, name, price, description, image) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO products (business_id, name, price, description, image, category) VALUES (?, ?, ?, ?, ?, ?)");
         try {
-            $stmt->execute([$biz_id, $data['name'], $data['price'], $data['description'] ?? '', $data['image'] ?? '']);
+            $stmt->execute([
+                $biz_id, 
+                $data['name'], 
+                $data['price'], 
+                $data['description'] ?? '', 
+                $data['image'] ?? '',
+                $data['category'] ?? ''
+            ]);
+            echo json_encode(['status' => 'success', 'product_id' => $db->lastInsertId()]);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+    
+    if ($action == 'update_product') {
+        $product_id = $data['product_id'] ?? 0;
+        $biz_id = $data['business_id'] ?? 0;
+        
+        try {
+            $stmt = $db->prepare("UPDATE products SET name = ?, price = ?, description = ?, image = ?, category = ? 
+                                 WHERE id = ? AND business_id = ?");
+            $stmt->execute([
+                $data['name'],
+                $data['price'],
+                $data['description'] ?? '',
+                $data['image'] ?? '',
+                $data['category'] ?? '',
+                $product_id,
+                $biz_id
+            ]);
+            echo json_encode(['status' => 'success']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+    
+    if ($action == 'delete_product') {
+        $product_id = $data['product_id'] ?? 0;
+        $biz_id = $data['business_id'] ?? 0;
+        
+        try {
+            $stmt = $db->prepare("DELETE FROM products WHERE id = ? AND business_id = ?");
+            $stmt->execute([$product_id, $biz_id]);
+            echo json_encode(['status' => 'success']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+    
+    if ($action == 'toggle_product_availability') {
+        $product_id = $data['product_id'] ?? 0;
+        $biz_id = $data['business_id'] ?? 0;
+        
+        try {
+            $stmt = $db->prepare("UPDATE products SET is_available = NOT is_available WHERE id = ? AND business_id = ?");
+            $stmt->execute([$product_id, $biz_id]);
+            echo json_encode(['status' => 'success']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+    
+    if ($action == 'update_order_status') {
+        $order_id = $data['order_id'] ?? 0;
+        $status = $data['status'] ?? '';
+        $biz_id = $data['business_id'] ?? 0;
+        
+        try {
+            $stmt = $db->prepare("UPDATE orders SET status = ? WHERE id = ? AND business_id = ?");
+            $stmt->execute([$status, $order_id, $biz_id]);
+            echo json_encode(['status' => 'success']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+    
+    if ($action == 'update_business_settings') {
+        $biz_id = $data['business_id'] ?? 0;
+        
+        try {
+            $updates = [];
+            $params = [];
+            
+            if (isset($data['is_open'])) {
+                $updates[] = "is_open = ?";
+                $params[] = $data['is_open'];
+            }
+            if (isset($data['delivery_price'])) {
+                $updates[] = "delivery_price = ?";
+                $params[] = $data['delivery_price'];
+            }
+            if (isset($data['address'])) {
+                $updates[] = "address = ?";
+                $params[] = $data['address'];
+            }
+            
+            if (count($updates) > 0) {
+                $params[] = $biz_id;
+                $query = "UPDATE businesses SET " . implode(", ", $updates) . " WHERE id = ?";
+                $stmt = $db->prepare($query);
+                $stmt->execute($params);
+            }
+            
             echo json_encode(['status' => 'success']);
         } catch (Exception $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);

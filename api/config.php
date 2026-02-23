@@ -92,10 +92,16 @@ try {
         description TEXT,
         price DECIMAL(15, 2) NOT NULL,
         image VARCHAR(255) DEFAULT '',
+        category VARCHAR(50) DEFAULT '',
         is_available TINYINT(1) DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+    
+    // Add category column if not exists
+    try {
+        $db->exec("ALTER TABLE products ADD COLUMN category VARCHAR(50) DEFAULT '' AFTER image");
+    } catch (PDOException $e) {}
 
     // Orders Table
     $db->exec("CREATE TABLE IF NOT EXISTS orders (

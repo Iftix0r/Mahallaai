@@ -84,31 +84,71 @@ function renderProducts(products) {
         return;
     }
 
-    grid.innerHTML = products.map(p => `
-        <div class="product-card" data-id="${p.id}" data-biz-id="${p.biz_id}" data-name="${p.name}" data-price="${p.price}">
+    // Category emoji mapping
+    const categoryEmoji = {
+        'mevalar': '🍎',
+        'sabzavotlar': '🥦',
+        'sut': '🥛',
+        'gosht': '🥩',
+        'non': '🍞',
+        'ichimliklar': '🧃',
+        'tozalik': '🧽',
+        'boshqa': '📦'
+    };
+
+    grid.innerHTML = products.map(p => {
+        const category = (p.category || 'boshqa').toLowerCase();
+        const emoji = categoryEmoji[category] || '📦';
+        
+        return `
+        <div class="product-card" data-id="${p.id}" data-biz-id="${p.biz_id}" data-name="${p.name}" data-price="${p.price}" data-category="${category}">
             <div class="product-img" style="background: #f1f5f9;">
-                <img src="${p.image || ''}" style="width:100%; height:100%; object-fit:contain;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3081/3081840.png'">
+                ${p.image ? 
+                    `<img src="${p.image}" style="width:100%; height:100%; object-fit:contain;" onerror="this.parentElement.innerHTML='<span style=\\'font-size:3rem;\\'>${emoji}</span>'">` :
+                    `<span style="font-size:3rem;">${emoji}</span>`
+                }
             </div>
             <div class="product-info">
                 <h5>${p.name}</h5>
-                <p>Donalik / kg</p>
+                <p>${p.description || 'Donalik / kg'}</p>
+                ${p.business_name ? `<p style="font-size:0.75rem; color:#94a3b8;">🏪 ${p.business_name}</p>` : ''}
                 <div class="product-bottom">
                     <span class="product-price">${parseFloat(p.price).toLocaleString()}</span>
                     <button class="add-product-btn" onclick="addToMarketCart(this)">+</button>
                 </div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
-// Category filter (stays local for now as it filters rendered products)
+// Category filter
 document.querySelectorAll('.mcat-item').forEach(cat => {
     cat.addEventListener('click', () => {
         document.querySelectorAll('.mcat-item').forEach(c => c.classList.remove('active'));
         cat.classList.add('active');
-        // This would require tagging products with categories in DB
+        
+        const category = cat.dataset.cat;
+        filterProductsByCategory(category);
     });
 });
+
+function filterProductsByCategory(category) {
+    const cards = document.querySelectorAll('.product-card');
+    
+    cards.forEach(card => {
+        const productCategory = card.dataset.category || '';
+        
+        if (category === 'all' || productCategory === category) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Update count
+    const visibleCount = document.querySelectorAll('.product-card[style*="display: block"], .product-card:not([style*="display: none"])').length;
+    document.getElementById('product-count').textContent = visibleCount + ' ta';
+}
 
 window.addToMarketCart = function (btn) {
     const card = btn.closest('.product-card');

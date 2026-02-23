@@ -81,7 +81,32 @@ async function showBiznesDashboard() {
     };
     document.getElementById('biz-dash-cat').textContent = catMap[myBusiness.category] || myBusiness.category;
 
+    // Load statistics
+    loadBusinessStats();
     loadBusinessOrders();
+}
+
+async function loadBusinessStats() {
+    if (!myBusiness) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}?action=get_business_stats&business_id=${myBusiness.id}`);
+        const stats = await response.json();
+        
+        // Update stats display
+        document.querySelector('.bz-stat:nth-child(1) h4').textContent = 
+            parseFloat(stats.today_revenue).toLocaleString() + ' so\'m';
+        document.querySelector('.bz-stat:nth-child(2) h4').textContent = 
+            stats.today_orders + ' ta';
+        
+        // Update badge on orders tab
+        const badge = document.querySelector('.bz-tab[data-target="bz-orders"] .badge');
+        if (badge) {
+            badge.textContent = stats.pending_orders;
+        }
+    } catch (e) {
+        console.error('Stats load error:', e);
+    }
 }
 
 async function loadBusinessOrders() {
@@ -98,18 +123,52 @@ async function loadBusinessOrders() {
             list.innerHTML = orders.map(o => {
                 const items = JSON.parse(o.items);
                 const itemsText = items.map(i => `${i.qty} x ${i.name}`).join(', ');
+                
+                const statusMap = {
+                    'pending': { text: 'Yangi', color: '#f59e0b', bg: '#fef3c7' },
+                    'preparing': { text: 'Tayyorlanmoqda', color: '#3b82f6', bg: '#dbeafe' },
+                    'ready': { text: 'Tayyor', color: '#10b981', bg: '#d1fae5' },
+                    'delivering': { text: 'Yetkazilmoqda', color: '#8b5cf6', bg: '#ede9fe' },
+                    'completed': { text: 'Yetkazildi', color: '#6b7280', bg: '#f3f4f6' },
+                    'cancelled': { text: 'Bekor qilindi', color: '#ef4444', bg: '#fee2e2' }
+                };
+                
+                const status = statusMap[o.status] || statusMap['pending'];
+                
                 return `
                     <div class="bz-card" style="margin-bottom:12px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                            <span style="font-weight:700;">Order #${o.id}</span>
-                            <span style="color:var(--primary); font-weight:600;">${parseFloat(o.total_amount).toLocaleString()}</span>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px; align-items:center;">
+                            <div>
+                                <span style="font-weight:700;">Buyurtma #${o.id}</span>
+                                <span style="background:${status.bg}; color:${status.color}; padding:4px 8px; border-radius:6px; font-size:0.75rem; margin-left:8px; font-weight:600;">${status.text}</span>
+                            </div>
+                            <span style="color:var(--primary); font-weight:700; font-size:1.1rem;">${parseFloat(o.total_amount).toLocaleString()} so'm</span>
                         </div>
-                        <p style="font-size:0.85rem; color:#64748b; margin-bottom:8px;">Mijoz: ${o.customer_name}</p>
-                        <p style="font-size:0.9rem;">${itemsText}</p>
-                        <div style="margin-top:10px; display:flex; gap:10px;">
-                            <button class="btn-primary" style="padding:8px 16px; font-size:0.8rem; background: var(--accent); color:white;">Tayyor</button>
-                            <button class="btn-outline" style="padding:8px 16px; font-size:0.8rem; border:1px solid #e2e8f0; border-radius:10px;">Bekor qilish</button>
-                        </div>
+                        <p style="font-size:0.85rem; color:#64748b; margin-bottom:4px;">👤 ${o.customer_name}</p>
+                        <p style="font-size:0.85rem; color:#64748b; margin-bottom:8px;">📞 ${o.customer_phone || 'Telefon yo\'q'}</p>
+                        <p style="font-size:0.9rem; margin-bottom:10px;">📦 ${itemsText}</p>
+                        <p style="font-size:0.8rem; color:#94a3b8;">🕐 ${new Date(o.created_at).toLocaleString('uz-UZ')}</p>
+                        ${o.status === 'pending' ? `
+                            <div style="margin-top:12px; display:flex; gap:8px;">
+                                <button onclick="updateOrderStatus(${o.id}, 'preparing')" class="btn-primary" style="flex:1; padding:8px 16px; font-size:0.85rem; background:#3b82f6; border:none; border-radius:8px; color:white; cursor:pointer;">✓ Qabul qilish</button>
+                                <button onclick="updateOrderStatus(${o.id}, 'cancelled')" style="flex:1; padding:8px 16px; font-size:0.85rem; border:1px solid #ef4444; background:white; border-radius:8px; color:#ef4444; cursor:pointer;">✕ Bekor qilish</button>
+                            </div>
+                        ` : ''}
+                        ${o.status === 'preparing' ? `
+                            <div style="margin-top:12px;">
+                                <button onclick="updateOrderStatus(${o.id}, 'ready')" class="btn-primary" style="width:100%; padding:8px 16px; font-size:0.85rem; background:#10b981; border:none; border-radius:8px; color:white; cursor:pointer;">✓ Tayyor</button>
+                            </div>
+                        ` : ''}
+                        ${o.status === 'ready' ? `
+                            <div style="margin-top:12px;">
+                                <button onclick="updateOrderStatus(${o.id}, 'delivering')" class="btn-primary" style="width:100%; padding:8px 16px; font-size:0.85rem; background:#8b5cf6; border:none; border-radius:8px; color:white; cursor:pointer;">🚚 Yetkazishga yuborish</button>
+                            </div>
+                        ` : ''}
+                        ${o.status === 'delivering' ? `
+                            <div style="margin-top:12px;">
+                                <button onclick="updateOrderStatus(${o.id}, 'completed')" class="btn-primary" style="width:100%; padding:8px 16px; font-size:0.85rem; background:#10b981; border:none; border-radius:8px; color:white; cursor:pointer;">✓ Yetkazildi</button>
+                            </div>
+                        ` : ''}
                     </div>
                 `;
             }).join('');
@@ -126,12 +185,49 @@ async function loadBusinessOrders() {
     }
 }
 
+window.updateOrderStatus = async function(orderId, status) {
+    if (!myBusiness) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}?action=update_order_status`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                order_id: orderId,
+                status: status,
+                business_id: myBusiness.id
+            })
+        });
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            const statusText = {
+                'preparing': 'Qabul qilindi',
+                'ready': 'Tayyor deb belgilandi',
+                'delivering': 'Yetkazishga yuborildi',
+                'completed': 'Yakunlandi',
+                'cancelled': 'Bekor qilindi'
+            };
+            tg.showAlert(statusText[status] || 'Yangilandi');
+            loadBusinessOrders();
+            loadBusinessStats();
+        } else {
+            tg.showAlert('Xatolik yuz berdi!');
+        }
+    } catch (e) {
+        tg.showAlert('Xatolik!');
+    }
+};
+
 window.addProduct = async function () {
     const name = prompt("Mahsulot nomi:");
+    if (!name) return;
+    
     const price = prompt("Narxi (so'm):");
-    const desc = prompt("Tavsif:");
-
-    if (!name || !price) return;
+    if (!price) return;
+    
+    const category = prompt("Kategoriya (masalan: mevalar, sabzavotlar, sut):");
+    const desc = prompt("Tavsif (ixtiyoriy):");
 
     try {
         const response = await fetch(`${API_BASE}?action=add_product`, {
@@ -141,21 +237,72 @@ window.addProduct = async function () {
                 business_id: myBusiness.id,
                 name: name,
                 price: parseFloat(price),
-                description: desc
+                description: desc || '',
+                category: category || '',
+                image: ''
             })
         });
         const result = await response.json();
 
         if (result.status === 'success') {
-            tg.showAlert("Mahsulot qo'shildi!");
+            tg.showAlert("✅ Mahsulot qo'shildi!");
             loadBusinessProducts();
+            loadBusinessStats();
         } else {
-            tg.showAlert("Xatolik!");
+            tg.showAlert("❌ Xatolik!");
         }
     } catch (e) {
-        tg.showAlert("Xatolik!");
+        tg.showAlert("❌ Xatolik!");
     }
-}
+};
+
+window.deleteProduct = async function(productId) {
+    if (!confirm('Mahsulotni o\'chirmoqchimisiz?')) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}?action=delete_product`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                product_id: productId,
+                business_id: myBusiness.id
+            })
+        });
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            tg.showAlert('✅ O\'chirildi!');
+            loadBusinessProducts();
+            loadBusinessStats();
+        } else {
+            tg.showAlert('❌ Xatolik!');
+        }
+    } catch (e) {
+        tg.showAlert('❌ Xatolik!');
+    }
+};
+
+window.toggleProductAvailability = async function(productId) {
+    try {
+        const response = await fetch(`${API_BASE}?action=toggle_product_availability`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                product_id: productId,
+                business_id: myBusiness.id
+            })
+        });
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            loadBusinessProducts();
+        } else {
+            tg.showAlert('❌ Xatolik!');
+        }
+    } catch (e) {
+        tg.showAlert('❌ Xatolik!');
+    }
+};
 
 async function loadBusinessProducts() {
     if (!myBusiness) return;
@@ -168,12 +315,22 @@ async function loadBusinessProducts() {
 
         if (products && products.length > 0) {
             list.innerHTML = products.map(p => `
-                <div class="bz-card" style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <h5 style="margin:0">${p.name}</h5>
-                        <p style="margin:0; font-size:0.8rem; color:#64748b;">${parseFloat(p.price).toLocaleString()} so'm</p>
+                <div class="bz-card" style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; ${p.is_available == 0 ? 'opacity:0.5;' : ''}">
+                    <div style="flex:1;">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                            <h5 style="margin:0">${p.name}</h5>
+                            ${p.category ? `<span style="background:#e0f2fe; color:#0284c7; padding:2px 8px; border-radius:6px; font-size:0.7rem;">${p.category}</span>` : ''}
+                            ${p.is_available == 0 ? '<span style="background:#fee2e2; color:#ef4444; padding:2px 8px; border-radius:6px; font-size:0.7rem;">Mavjud emas</span>' : ''}
+                        </div>
+                        <p style="margin:0; font-size:0.8rem; color:#64748b;">${p.description || 'Tavsif yo\'q'}</p>
+                        <p style="margin:4px 0 0 0; font-size:0.9rem; font-weight:700; color:var(--primary);">${parseFloat(p.price).toLocaleString()} so'm</p>
                     </div>
-                    <button style="border:none; background:none; color:#ef4444;">O'chirish</button>
+                    <div style="display:flex; gap:6px;">
+                        <button onclick="toggleProductAvailability(${p.id})" style="border:none; background:#f1f5f9; color:#64748b; padding:8px 12px; border-radius:8px; cursor:pointer; font-size:0.8rem;" title="${p.is_available == 1 ? 'Mavjud emas deb belgilash' : 'Mavjud deb belgilash'}">
+                            ${p.is_available == 1 ? '👁️' : '🚫'}
+                        </button>
+                        <button onclick="deleteProduct(${p.id})" style="border:none; background:#fee2e2; color:#ef4444; padding:8px 12px; border-radius:8px; cursor:pointer; font-size:0.8rem;">🗑️</button>
+                    </div>
                 </div>
             `).join('');
         } else {
@@ -195,8 +352,56 @@ document.querySelectorAll('.bz-tab').forEach(tab => {
 
         if (targetId === 'bz-products') loadBusinessProducts();
         if (targetId === 'bz-orders') loadBusinessOrders();
+        if (targetId === 'bz-settings') loadBusinessSettings();
     });
 });
+
+async function loadBusinessSettings() {
+    if (!myBusiness) return;
+    
+    // Set current values
+    const openSwitch = document.querySelector('#bz-settings input[type="checkbox"]');
+    if (openSwitch) {
+        openSwitch.checked = myBusiness.is_open == 1;
+        openSwitch.onchange = async function() {
+            await updateBusinessSettings({ is_open: this.checked ? 1 : 0 });
+        };
+    }
+    
+    const deliveryInput = document.querySelector('#bz-settings input[type="number"]');
+    if (deliveryInput) {
+        deliveryInput.value = myBusiness.delivery_price || 0;
+        deliveryInput.onchange = async function() {
+            await updateBusinessSettings({ delivery_price: this.value });
+        };
+    }
+}
+
+async function updateBusinessSettings(settings) {
+    if (!myBusiness) return;
+    
+    try {
+        const response = await fetch(`${API_BASE}?action=update_business_settings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                business_id: myBusiness.id,
+                ...settings
+            })
+        });
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            // Update local business object
+            Object.assign(myBusiness, settings);
+            tg.showAlert('✅ Saqlandi!');
+        } else {
+            tg.showAlert('❌ Xatolik!');
+        }
+    } catch (e) {
+        tg.showAlert('❌ Xatolik!');
+    }
+}
 
 // Hook into navigation
 const bizOriginalSwitchTab = window.switchTab;
