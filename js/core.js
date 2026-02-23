@@ -302,5 +302,37 @@ window.processRecharge = async function () {
     }
 };
 
+window.payWithBalance = async function (amount) {
+    if (!currentUser || !currentUser.id) {
+        tg.showAlert("Iltimos, avval tizimga kiring!");
+        return false;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}?action=process_payment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: currentUser.id,
+                amount: amount
+            })
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            currentUser.balance = result.new_balance;
+            updateUI(currentUser);
+            return true;
+        } else {
+            tg.showAlert(result.message);
+            return false;
+        }
+    } catch (e) {
+        console.error(e);
+        tg.showAlert("To'lov jarayonida xatolik yuz berdi.");
+        return false;
+    }
+};
+
 // Start!
 init();

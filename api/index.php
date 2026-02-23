@@ -130,4 +130,31 @@ if ($method == 'POST') {
             echo json_encode(['status' => 'error', 'message' => 'Invalid data']);
         }
     }
+
+    if ($action == 'process_payment') {
+        $user_id = $data['user_id'] ?? 0;
+        $amount = (float)($data['amount'] ?? 0);
+
+        if ($user_id && $amount > 0) {
+            try {
+                $stmt = $db->prepare("SELECT balance FROM users WHERE id = ?");
+                $stmt->execute([$user_id]);
+                $current_balance = (float)$stmt->fetchColumn();
+
+                if ($current_balance >= $amount) {
+                    $stmt = $db->prepare("UPDATE users SET balance = balance - ? WHERE id = ?");
+                    $stmt->execute([$amount, $user_id]);
+                    
+                    $new_balance = $current_balance - $amount;
+                    echo json_encode(['status' => 'success', 'new_balance' => $new_balance]);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Balansda mablag\' yetarli emas!']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            }
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid data']);
+        }
+    }
 }

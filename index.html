@@ -910,66 +910,7 @@
         </main>
     </div>
 
-    <div class="modal-header">
-        <div style="display: flex; justify-content: space-between; align-items: start;">
-            <div>
-                <h3>Karta qo'shish</h3>
-                <p>Yangi plastik karta raqamini kiriting</p>
-            </div>
-            <button onclick="closeBankCardModal()"
-                style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
-        </div>
-    </div>
-    <div class="modal-body">
-        <div class="form-group">
-            <label>Karta raqami</label>
-            <input type="text" id="bank-card-num" placeholder="8600 1234 5678 9012" maxlength="19">
-        </div>
-        <div class="form-group" style="display:flex; gap:10px;">
-            <div style="flex:1;">
-                <label>Amal qilish muddati</label>
-                <input type="text" id="bank-card-exp" placeholder="MM/YY" maxlength="5">
-            </div>
-            <div style="flex:1;">
-                <label>Ism Familiya</label>
-                <input type="text" id="bank-card-name" placeholder="ALISHER NAVOIY">
-            </div>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn-primary" style="width: 100%;" onclick="submitBankCard()">Kartani ulash</button>
-    </div>
-    </div>
-    </div>
 
-    <!-- Transfer Modal -->
-    <div id="transfer-modal" class="modal-backdrop hidden">
-        <div class="modal">
-            <div class="modal-header">
-                <div style="display: flex; justify-content: space-between; align-items: start;">
-                    <div>
-                        <h3>Pul o'tkazish</h3>
-                        <p>Karta raqami yordamida pul yuborish</p>
-                    </div>
-                    <button onclick="closeTransferModal()"
-                        style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Qabul qiluvchining kartasi</label>
-                    <input type="text" id="tf-card-num" placeholder="8600 / 9860..." maxlength="19">
-                </div>
-                <div class="form-group">
-                    <label>Summa (so'm)</label>
-                    <input type="number" id="tf-amount" placeholder="Pulingiz miqdorini kiriting">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-primary" style="width: 100%;" onclick="submitTransfer()">O'tkazish</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Profile Setup Modal -->
     <div id="profile-modal" class="modal-backdrop hidden">
@@ -1024,7 +965,7 @@
     <script src="js/market.js"></script>
     <script src="js/ish.js"></script>
     <script src="js/biznes.js"></script>
-    <script src="js/bank.js"></script>
+
     <script>
         // Auth Logic
         let isLoggedIn = false;
