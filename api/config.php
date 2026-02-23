@@ -66,8 +66,13 @@ try {
         password VARCHAR(255),
         region VARCHAR(100),
         mahalla VARCHAR(100),
+        balance DECIMAL(15, 2) DEFAULT 0.00,
         registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    try {
+        $db->exec("ALTER TABLE users ADD COLUMN balance DECIMAL(15, 2) DEFAULT 0.00 AFTER mahalla");
+    } catch (PDOException $e) {}
 
     try {
         $db->exec("ALTER TABLE users ADD COLUMN password VARCHAR(255) AFTER phone");

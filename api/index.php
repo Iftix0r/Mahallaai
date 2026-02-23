@@ -108,4 +108,26 @@ if ($method == 'POST') {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
+
+    if ($action == 'recharge_balance') {
+        $user_id = $data['user_id'] ?? 0;
+        $amount = (float)($data['amount'] ?? 0);
+
+        if ($user_id && $amount > 0) {
+            try {
+                $stmt = $db->prepare("UPDATE users SET balance = balance + ? WHERE id = ?");
+                $stmt->execute([$amount, $user_id]);
+                
+                $stmt = $db->prepare("SELECT balance FROM users WHERE id = ?");
+                $stmt->execute([$user_id]);
+                $new_balance = $stmt->fetchColumn();
+                
+                echo json_encode(['status' => 'success', 'new_balance' => $new_balance]);
+            } catch (Exception $e) {
+                echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            }
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid data']);
+        }
+    }
 }

@@ -108,12 +108,12 @@
                         <p>Aka-uka Bektoshevlar zamonaviy ta'lim markazi</p>
                     </div>
                 </div>
-                <div class="selection-card bank" onclick="switchTab('bank')">
+                <div class="selection-card abedu" onclick="switchTab('abedu')">
                     <div class="card-glow"></div>
-                    <div class="card-icon-large">🏦</div>
+                    <div class="card-icon-large">🎓</div>
                     <div class="card-text">
-                        <h3>Mahalla Bank</h3>
-                        <p>To'lovlar, o'tkazmalar va moliya</p>
+                        <h3>AB Education</h3>
+                        <p>Aka-uka Bektoshevlar zamonaviy ta'lim markazi</p>
                     </div>
                 </div>
             </div>
@@ -133,7 +133,13 @@
                 <div class="avatar" id="user-avatar">M</div>
                 <div class="user-info">
                     <h3 id="user-name">Foydalanuvchi</h3>
-                    <p id="user-region">Toshkent shahar...</p>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span id="user-balance-display"
+                            style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 2px 8px; border-radius: 8px; font-size: 0.85rem; font-weight: 700;">0
+                            so'm</span>
+                        <button onclick="openRechargeModal()"
+                            style="border: none; background: none; color: var(--primary); font-size: 1.1rem; cursor: pointer; padding: 0;">➕</button>
+                    </div>
                 </div>
             </div>
             <button class="notification-btn" style="border: none; background: none; font-size: 1.2rem;">
@@ -904,105 +910,36 @@
         </main>
     </div>
 
-    <!-- Mahalla Bank App -->
-    <div id="bank-app" class="screen hidden" style="background:#f1f5f9; padding-bottom:80px;">
-        <header class="bank-header">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px;">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <button class="back-to-menu-dark" onclick="switchTab('menu')">←</button>
-                    <h3 style="font-weight: 700; font-size: 1.1rem; color: #1e293b;">Mahalla Bank</h3>
-                </div>
-                <button class="add-card-btn" onclick="openBankCardModal()">+ Karta qo'shish</button>
+    <div class="modal-header">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div>
+                <h3>Karta qo'shish</h3>
+                <p>Yangi plastik karta raqamini kiriting</p>
             </div>
-        </header>
-
-        <main class="bank-main">
-            <!-- User Cards Carousel -->
-            <div class="bank-section">
-                <h4 class="bank-section-title">Mening kartalarim</h4>
-                <div class="cards-carousel" id="user-cards-carousel">
-                    <!-- Cards injected by JS -->
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="bank-actions">
-                <div class="action-btn" onclick="openTransferModal()">
-                    <div class="action-icon" style="background: #eff6ff; color: #3b82f6;">↗️</div>
-                    <span>O'tkazma</span>
-                </div>
-                <div class="action-btn">
-                    <div class="action-icon" style="background: #ecfdf5; color: #10b981;">💳</div>
-                    <span>To'lov</span>
-                </div>
-                <div class="action-btn">
-                    <div class="action-icon" style="background: #fffbeb; color: #d97706;">📃</div>
-                    <span>Tarix</span>
-                </div>
-                <div class="action-btn">
-                    <div class="action-icon" style="background: #f5f3ff; color: #8b5cf6;">➕</div>
-                    <span>Boshqa</span>
-                </div>
-            </div>
-
-            <!-- Recent Transactions -->
-            <div class="bank-section" style="margin-top: 24px; padding: 0 20px;">
-                <h4 class="bank-section-title">So'nggi o'tkazmalar</h4>
-                <div class="transactions-list">
-                    <div class="transaction-item">
-                        <div class="t-icon bg-red">↙️</div>
-                        <div class="t-info">
-                            <h4>Oziq-ovqat do'koni</h4>
-                            <p>Kecha, 14:30</p>
-                        </div>
-                        <div class="t-amount negative">-45 000 so'm</div>
-                    </div>
-                    <div class="transaction-item">
-                        <div class="t-icon bg-green">↗️</div>
-                        <div class="t-info">
-                            <h4>A. Bektoshev (Aka)</h4>
-                            <p>12 Fevral, 10:00</p>
-                        </div>
-                        <div class="t-amount positive">+150 000 so'm</div>
-                    </div>
-                </div>
-            </div>
-        </main>
+            <button onclick="closeBankCardModal()"
+                style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+        </div>
     </div>
-
-    <!-- Add Card Modal -->
-    <div id="add-bank-card-modal" class="modal-backdrop hidden">
-        <div class="modal">
-            <div class="modal-header">
-                <div style="display: flex; justify-content: space-between; align-items: start;">
-                    <div>
-                        <h3>Karta qo'shish</h3>
-                        <p>Yangi plastik karta raqamini kiriting</p>
-                    </div>
-                    <button onclick="closeBankCardModal()"
-                        style="border: none; background: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">&times;</button>
-                </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Karta raqami</label>
+            <input type="text" id="bank-card-num" placeholder="8600 1234 5678 9012" maxlength="19">
+        </div>
+        <div class="form-group" style="display:flex; gap:10px;">
+            <div style="flex:1;">
+                <label>Amal qilish muddati</label>
+                <input type="text" id="bank-card-exp" placeholder="MM/YY" maxlength="5">
             </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Karta raqami</label>
-                    <input type="text" id="bank-card-num" placeholder="8600 1234 5678 9012" maxlength="19">
-                </div>
-                <div class="form-group" style="display:flex; gap:10px;">
-                    <div style="flex:1;">
-                        <label>Amal qilish muddati</label>
-                        <input type="text" id="bank-card-exp" placeholder="MM/YY" maxlength="5">
-                    </div>
-                    <div style="flex:1;">
-                        <label>Ism Familiya</label>
-                        <input type="text" id="bank-card-name" placeholder="ALISHER NAVOIY">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-primary" style="width: 100%;" onclick="submitBankCard()">Kartani ulash</button>
+            <div style="flex:1;">
+                <label>Ism Familiya</label>
+                <input type="text" id="bank-card-name" placeholder="ALISHER NAVOIY">
             </div>
         </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-primary" style="width: 100%;" onclick="submitBankCard()">Kartani ulash</button>
+    </div>
+    </div>
     </div>
 
     <!-- Transfer Modal -->

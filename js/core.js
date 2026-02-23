@@ -103,6 +103,13 @@ function updateUI(user) {
     } else {
         userRegion.textContent = "Hudud belgilanmagan";
     }
+
+    // Update Balance display
+    const balanceDisplay = document.getElementById('user-balance-display');
+    if (balanceDisplay) {
+        const balance = parseFloat(user.balance || 0);
+        balanceDisplay.textContent = balance.toLocaleString() + " so'm";
+    }
     // Update global auth state if login button exists
     if (typeof window.updateAuthState === 'function') {
         window.isLoggedIn = true;
@@ -240,6 +247,60 @@ if (globalSearch) {
         });
     });
 }
+
+// ===== BALANCE SYSTEM =====
+window.openRechargeModal = function () {
+    document.getElementById('recharge-modal').classList.remove('hidden');
+};
+
+window.closeRechargeModal = function () {
+    document.getElementById('recharge-modal').classList.add('hidden');
+};
+
+window.setRechargeAmount = function (amount) {
+    document.getElementById('recharge-amount').value = amount;
+    // Visually highlight selected option
+    document.querySelectorAll('.r-opt').forEach(el => {
+        el.style.borderColor = el.innerText.replace(/\s/g, '') == amount ? 'var(--primary)' : '#e2e8f0';
+        el.style.background = el.innerText.replace(/\s/g, '') == amount ? 'rgba(37, 99, 235, 0.05)' : 'white';
+    });
+};
+
+window.processRecharge = async function () {
+    const amount = document.getElementById('recharge-amount').value;
+    if (!amount || amount <= 0) {
+        tg.showAlert("Iltimos, summani kiriting!");
+        return;
+    }
+
+    if (!currentUser || !currentUser.id) {
+        tg.showAlert("Iltimos, avval tizimga kiring!");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}?action=recharge_balance`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: currentUser.id,
+                amount: amount
+            })
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            currentUser.balance = result.new_balance;
+            updateUI(currentUser);
+            closeRechargeModal();
+            tg.showAlert(`Hisobingiz ${parseFloat(amount).toLocaleString()} so'mga to'ldirildi! ✅`);
+        } else {
+            tg.showAlert("Xatolik: " + result.message);
+        }
+    } catch (e) {
+        tg.showAlert("To'lovni amalga oshirib bo'lmadi.");
+    }
+};
 
 // Start!
 init();
