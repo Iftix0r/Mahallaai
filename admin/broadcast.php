@@ -11,6 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_broadcast'])) {
     $mediaType = 'text';
     $mediaFile = '';
     
+    // Debug: Log file upload info
+    error_log("File upload debug: " . print_r($_FILES, true));
+    
     // Handle file upload
     if (isset($_FILES['media_file']) && $_FILES['media_file']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = __DIR__ . '/uploads/';
@@ -23,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_broadcast'])) {
         
         // Detect media type
         $mimeType = $_FILES['media_file']['type'];
+        error_log("MIME Type: " . $mimeType);
+        
         if (strpos($mimeType, 'image/') === 0) {
             $mediaType = 'photo';
         } elseif (strpos($mimeType, 'video/') === 0) {
@@ -33,10 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_broadcast'])) {
         
         if (move_uploaded_file($_FILES['media_file']['tmp_name'], $filePath)) {
             $mediaFile = $filePath;
+            error_log("File uploaded successfully: " . $mediaFile . " Type: " . $mediaType);
         } else {
             $msg = 'Fayl yuklashda xatolik!';
             $msgType = 'danger';
+            error_log("File upload failed!");
         }
+    } elseif (isset($_FILES['media_file'])) {
+        error_log("File upload error code: " . $_FILES['media_file']['error']);
     }
     
     if (empty($messageText) && empty($mediaFile)) {
@@ -282,6 +291,7 @@ $totalAll = $totalUsers + $totalGroups + $totalChannels;
         transition: all 0.3s ease;
         background: #fafbfc;
         position: relative;
+        overflow: hidden;
     }
 
     .file-upload-area:hover {
@@ -855,12 +865,18 @@ function handleFileSelect(input) {
     const fileSize = document.getElementById('fileSize');
     const previewImage = document.getElementById('previewImage');
 
-    // Show loading animation
-    area.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 10px;">Yuklanmoqda...</p>';
+    // Show loading animation (without destroying input)
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'loadingOverlay';
+    loadingDiv.style.cssText = 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; z-index: 10;';
+    loadingDiv.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i><p style="margin-top: 10px; color: var(--text);">Yuklanmoqda...</p>';
+    area.appendChild(loadingDiv);
 
     // Simulate file processing
     setTimeout(() => {
-        area.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Rasm, video yoki fayl yuklang</p><small>JPG, PNG, GIF, MP4, PDF va boshqalar</small><input type="file" name="media_file" id="mediaFile" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar" onchange="handleFileSelect(this)">';
+        // Remove loading overlay
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) overlay.remove();
         
         area.classList.add('has-file');
         preview.classList.add('active');
@@ -876,30 +892,34 @@ function handleFileSelect(input) {
                 previewImage.style.display = 'block';
             };
             reader.readAsDataURL(file);
+        } else if (file.type.startsWith('video/')) {
+            // Show video icon for video files
+            previewImg.style.display = 'none';
+            previewImage.style.display = 'none';
         } else {
             previewImg.style.display = 'none';
             previewImage.style.display = 'none';
-            
-            // Show file icon instead
-            const iconMap = {
-                'video': '🎬',
-                'application/pdf': '📄',
-                'application': '📁'
-            };
-            let icon = '📎';
-            for (let key in iconMap) {
-                if (file.type.startsWith(key)) { icon = iconMap[key]; break; }
-            }
-            previewImg.style.display = 'none';
         }
     }, 500);
 }
 
 function removeFile() {
-    document.getElementById('mediaFile').value = '';
-    document.getElementById('uploadArea').classList.remove('has-file');
-    document.getElementById('filePreview').classList.remove('active');
-    document.getElementById('previewImage').style.display = 'none';
+    const fileInput = document.getElementById('mediaFile');
+    const area = document.getElementById('uploadArea');
+    const preview = document.getElementById('filePreview');
+    const previewImage = document.getElementById('previewImage');
+    
+    // Clear file input
+    fileInput.value = '';
+    
+    // Remove classes and hide preview
+    area.classList.remove('has-file');
+    preview.classList.remove('active');
+    previewImage.style.display = 'none';
+    
+    // Remove loading overlay if exists
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.remove();
 }
 
 function updatePreview() {
