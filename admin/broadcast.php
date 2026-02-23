@@ -85,6 +85,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_broadcast'])) {
         
         $totalSent = 0;
         $totalFailed = 0;
+        $totalChats = count($chatIds);
+        $processed = 0;
+        
+        // Enable output buffering for real-time progress
+        if (ob_get_level() == 0) ob_start();
         
         foreach ($chatIds as $chatId => $v) {
             $result = false;
@@ -105,6 +110,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_broadcast'])) {
                 $totalFailed++;
             }
             
+            $processed++;
+            
+            // Send progress update every 5 messages
+            if ($processed % 5 == 0 || $processed == $totalChats) {
+                $percent = round(($processed / $totalChats) * 100);
+                echo "data: " . json_encode([
+                    'progress' => $percent,
+                    'sent' => $totalSent,
+                    'failed' => $totalFailed,
+                    'total' => $totalChats,
+                    'current' => $processed
+                ]) . "\n\n";
+                ob_flush();
+                flush();
+            }
+            
             // Small delay to avoid Telegram rate limits
             usleep(50000); // 50ms
         }
@@ -113,8 +134,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_broadcast'])) {
         $stmt = $db->prepare("INSERT INTO broadcast_history (message_text, media_type, media_file, target, total_sent, total_failed, sent_by) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$messageText, $mediaType, basename($mediaFile), $target, $totalSent, $totalFailed, $_SESSION['admin_user']]);
         
-        $msg = "✅ Habar muvaffaqiyatli yuborildi! Yuborildi: {$totalSent}, Xatolik: {$totalFailed}";
-        $msgType = 'success';
+        // Send final response
+        echo "data: " . json_encode([
+            'status' => 'complete',
+            'sent' => $totalSent,
+            'failed' => $totalFailed,
+            'message' => "✅ Habar muvaffaqiyatli yuborildi! Yuborildi: {$totalSent}, Xatolik: {$totalFailed}"
+        ]) . "\n\n";
+        ob_end_flush();
+        exit;
     }
 }
 
@@ -1033,9 +1061,15 @@ document.getElementById('broadcastForm').addEventListener('submit', function(e) 
                 progressText.textContent = 'Fayl yuklanmoqda...';
                 progressStatus.textContent = `${formatFileSize(e.loaded)} / ${formatFileSize(e.total)}`;
             } else {
-                progressText.textContent = 'Ma\'lumotlar yuborilmoqda...';
+                progressText.textContent = 'Ma\'lumotlar yuklanmoqda...';
             }
         }
+    });
+    
+    // When upload is complete, show sending status
+    xhr.upload.addEventListener('load', function() {
+        progressText.textContent = 'Foydalanuvchilarga yuborilmoqda...';
+        progressStatus.textContent = 'Iltimos kuting...';
     });
     
     // Request complete
@@ -1044,19 +1078,68 @@ document.getElementById('broadcastForm').addEventListener('submit', function(e) 
         console.log('Response text:', xhr.responseText);
         
         if (xhr.status === 200) {
-            progressBar.style.width = '100%';
-            progressPercent.textContent = '100%';
-            progressText.textContent = '✅ Muvaffaqiyatli yuborildi!';
-            progressStatus.textContent = 'Habar barcha foydalanuvchilarga yetkazildi';
+            // Parse streaming response
+            const lines = xhr.responseText.split('\n');
+            let lastData = null;
             
-            setTimeout(function() {
-                window.location.reload();
-            }, 2000);
+            for (let line of lines) {
+                if (line.startsWith('data: ')) {
+                    try {
+                        lastData = JSON.parse(line.substring(6));
+                    } catch (e) {}
+                }
+            }
+            
+            if (lastData && lastData.status === 'complete') {
+                progressBar.style.width = '100%';
+                progressPercent.textContent = '100%';
+                progressText.textContent = '✅ Muvaffaqiyatli yuborildi!';
+                progressStatus.textContent = `Yuborildi: ${lastData.sent}, Xatolik: ${lastData.failed}`;
+                
+                setTimeout(function() {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                progressBar.style.width = '100%';
+                progressPercent.textContent = '100%';
+                progressText.textContent = '✅ Muvaffaqiyatli yuborildi!';
+                progressStatus.textContent = 'Habar barcha foydalanuvchilarga yetkazildi';
+                
+                setTimeout(function() {
+                    window.location.reload();
+                }, 2000);
+            }
         } else {
             progressText.textContent = '❌ Xatolik yuz berdi';
             progressStatus.textContent = 'Iltimos, qaytadan urinib ko\'ring';
             sendBtn.disabled = false;
             sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Habarni yuborish';
+        }
+    });
+    
+    // Progress handler for streaming response
+    let lastResponseLength = 0;
+    xhr.addEventListener('readystatechange', function() {
+        if (xhr.readyState === 3) { // LOADING
+            const response = xhr.responseText.substring(lastResponseLength);
+            lastResponseLength = xhr.responseText.length;
+            
+            const lines = response.split('\n');
+            for (let line of lines) {
+                if (line.startsWith('data: ')) {
+                    try {
+                        const data = JSON.parse(line.substring(6));
+                        if (data.progress) {
+                            progressBar.style.width = data.progress + '%';
+                            progressPercent.textContent = data.progress + '%';
+                            progressText.textContent = 'Yuborilmoqda...';
+                            progressStatus.textContent = `${data.current}/${data.total} - Yuborildi: ${data.sent}, Xatolik: ${data.failed}`;
+                        }
+                    } catch (e) {
+                        console.error('Parse error:', e);
+                    }
+                }
+            }
         }
     });
     
