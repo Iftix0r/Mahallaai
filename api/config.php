@@ -265,6 +265,65 @@ try {
     try {
         $db->exec("ALTER TABLE taxi_drivers ADD COLUMN location_updated_at TIMESTAMP NULL AFTER current_lng");
     } catch (PDOException $e) {}
+
+    // ========== MAHALLA AVTO TABLES ==========
+    
+    // Auto Salons Table
+    $db->exec("CREATE TABLE IF NOT EXISTS auto_salons (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        owner_id INT NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        description TEXT,
+        logo VARCHAR(255),
+        address TEXT,
+        phone VARCHAR(20),
+        working_hours VARCHAR(100),
+        is_active TINYINT(1) DEFAULT 1,
+        rating DECIMAL(3, 2) DEFAULT 5.00,
+        total_cars INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // Cars Table
+    $db->exec("CREATE TABLE IF NOT EXISTS cars (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        salon_id INT NULL,
+        seller_id INT NOT NULL,
+        listing_type ENUM('salon', 'private') DEFAULT 'private',
+        brand VARCHAR(100) NOT NULL,
+        model VARCHAR(100) NOT NULL,
+        year INT NOT NULL,
+        price DECIMAL(15, 2) NOT NULL,
+        mileage INT,
+        fuel_type VARCHAR(50),
+        transmission VARCHAR(50),
+        color VARCHAR(50),
+        body_type VARCHAR(50),
+        engine_volume DECIMAL(3, 1),
+        description TEXT,
+        condition_type ENUM('new', 'used') DEFAULT 'used',
+        location VARCHAR(255),
+        phone VARCHAR(20),
+        images TEXT,
+        is_sold TINYINT(1) DEFAULT 0,
+        views INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (salon_id) REFERENCES auto_salons(id) ON DELETE CASCADE,
+        FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+    // Car Favorites Table
+    $db->exec("CREATE TABLE IF NOT EXISTS car_favorites (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        car_id INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (car_id) REFERENCES cars(id) ON DELETE CASCADE,
+        UNIQUE KEY unique_favorite (user_id, car_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 } catch (PDOException $e) {
     // Note: In production, you might want to log this instead of dying
     // die("Database error: " . $e->getMessage());
