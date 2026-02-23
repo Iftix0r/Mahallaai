@@ -88,6 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_broadcast'])) {
         $totalChats = count($chatIds);
         $processed = 0;
         
+        // For media files, upload once and reuse file_id
+        $mediaFileId = null;
+        
         // Enable output buffering for real-time progress
         if (ob_get_level() == 0) ob_start();
         
@@ -95,11 +98,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['send_broadcast'])) {
             $result = false;
             
             if ($mediaType === 'photo' && $mediaFile) {
-                $result = sendPhoto($chatId, $mediaFile, $messageText);
+                if ($mediaFileId) {
+                    $result = sendPhotoByFileId($chatId, $mediaFileId, $messageText);
+                } else {
+                    $result = sendPhoto($chatId, $mediaFile, $messageText, $mediaFileId);
+                }
             } elseif ($mediaType === 'video' && $mediaFile) {
-                $result = sendVideo($chatId, $mediaFile, $messageText);
+                if ($mediaFileId) {
+                    $result = sendVideoByFileId($chatId, $mediaFileId, $messageText);
+                } else {
+                    $result = sendVideo($chatId, $mediaFile, $messageText, $mediaFileId);
+                }
             } elseif ($mediaType === 'document' && $mediaFile) {
-                $result = sendDocument($chatId, $mediaFile, $messageText);
+                if ($mediaFileId) {
+                    $result = sendDocumentByFileId($chatId, $mediaFileId, $messageText);
+                } else {
+                    $result = sendDocument($chatId, $mediaFile, $messageText, $mediaFileId);
+                }
             } else {
                 $result = sendBroadcastMessage($chatId, $messageText);
             }
@@ -174,7 +189,7 @@ function sendBroadcastMessage($chat_id, $text) {
     return isset($result['ok']) && $result['ok'];
 }
 
-function sendPhoto($chat_id, $filePath, $caption = '') {
+function sendPhoto($chat_id, $filePath, $caption = '', &$fileId = null) {
     $data = [
         'chat_id' => $chat_id,
         'photo' => new CURLFile($filePath),
@@ -190,10 +205,36 @@ function sendPhoto($chat_id, $filePath, $caption = '') {
     curl_close($ch);
     
     $result = json_decode($response, true);
+    
+    // Save file_id for reuse
+    if (isset($result['ok']) && $result['ok'] && isset($result['result']['photo'])) {
+        $photos = $result['result']['photo'];
+        $fileId = end($photos)['file_id']; // Get largest photo
+    }
+    
     return isset($result['ok']) && $result['ok'];
 }
 
-function sendVideo($chat_id, $filePath, $caption = '') {
+function sendPhotoByFileId($chat_id, $fileId, $caption = '') {
+    $data = [
+        'chat_id' => $chat_id,
+        'photo' => $fileId,
+        'caption' => $caption,
+        'parse_mode' => 'HTML'
+    ];
+    
+    $ch = curl_init(API_URL . 'sendPhoto');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    
+    $result = json_decode($response, true);
+    return isset($result['ok']) && $result['ok'];
+}
+
+function sendVideo($chat_id, $filePath, $caption = '', &$fileId = null) {
     $data = [
         'chat_id' => $chat_id,
         'video' => new CURLFile($filePath),
@@ -204,7 +245,32 @@ function sendVideo($chat_id, $filePath, $caption = '') {
     $ch = curl_init(API_URL . 'sendVideo');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 120); // 2 minutes for video
+    $response = curl_exec($ch);
+    curl_close($ch);
+    
+    $result = json_decode($response, true);
+    
+    // Save file_id for reuse
+    if (isset($result['ok']) && $result['ok'] && isset($result['result']['video']['file_id'])) {
+        $fileId = $result['result']['video']['file_id'];
+    }
+    
+    return isset($result['ok']) && $result['ok'];
+}
+
+function sendVideoByFileId($chat_id, $fileId, $caption = '') {
+    $data = [
+        'chat_id' => $chat_id,
+        'video' => $fileId,
+        'caption' => $caption,
+        'parse_mode' => 'HTML'
+    ];
+    
+    $ch = curl_init(API_URL . 'sendVideo');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     $response = curl_exec($ch);
     curl_close($ch);
     
@@ -212,7 +278,7 @@ function sendVideo($chat_id, $filePath, $caption = '') {
     return isset($result['ok']) && $result['ok'];
 }
 
-function sendDocument($chat_id, $filePath, $caption = '') {
+function sendDocument($chat_id, $filePath, $caption = '', &$fileId = null) {
     $data = [
         'chat_id' => $chat_id,
         'document' => new CURLFile($filePath),
@@ -223,7 +289,32 @@ function sendDocument($chat_id, $filePath, $caption = '') {
     $ch = curl_init(API_URL . 'sendDocument');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    
+    $result = json_decode($response, true);
+    
+    // Save file_id for reuse
+    if (isset($result['ok']) && $result['ok'] && isset($result['result']['document']['file_id'])) {
+        $fileId = $result['result']['document']['file_id'];
+    }
+    
+    return isset($result['ok']) && $result['ok'];
+}
+
+function sendDocumentByFileId($chat_id, $fileId, $caption = '') {
+    $data = [
+        'chat_id' => $chat_id,
+        'document' => $fileId,
+        'caption' => $caption,
+        'parse_mode' => 'HTML'
+    ];
+    
+    $ch = curl_init(API_URL . 'sendDocument');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     $response = curl_exec($ch);
     curl_close($ch);
     
